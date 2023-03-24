@@ -16,7 +16,14 @@ const Form = styled.form`
 const Title = styled.h6`
   font-size: 25px;
   font-weight: 600;
-  margin-bottom: 20px;
+`;
+
+const ScoreDiv = styled.div`
+  display: flex;
+  width: 100%;
+  margin: 15px 0;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 const InnerDiv = styled.div`
@@ -44,11 +51,29 @@ const Button = styled(motion.button)`
 
 const Lists = styled(motion.ul)`
   background-color: azure;
-  border-radius: 10px;
+  border-radius: 6px;
   position: absolute;
+  top: 60px;
   padding: 10px;
   overflow-y: scroll;
   max-height: 200px;
+  width: 100%;
+  cursor: pointer;
+  &::-webkit-scrollbar-track {
+    border-radius: 100px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    background-color: azure;
+  }
+  &::-webkit-scrollbar {
+    width: 8px;
+    border-radius: 100px;
+    background-color: azure;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 100px;
+    background-color: #000000;
+  }
 `;
 
 const List = styled(motion.li)`
@@ -56,6 +81,8 @@ const List = styled(motion.li)`
   font-size: 18px;
   font-weight: 600;
   border-radius: 10px;
+  margin-bottom: 5px;
+  cursor: pointer;
 `;
 
 const Input = styled.input`
@@ -101,6 +128,22 @@ const XBtn = styled.button`
   top: 15px;
 `;
 
+const arrowVariants: Variants = {
+  start: (showSelect: boolean) => {
+    return {
+      rotate: showSelect ? 180 : 0,
+    };
+  },
+  move: (showSelect: boolean) => {
+    return {
+      rotate: showSelect ? 0 : 180,
+      transition: {
+        duration: 0.2,
+      },
+    };
+  },
+};
+
 function TableForm() {
   const { register, handleSubmit } = useForm();
   const [showSelect, setShowSelect] = useState(false);
@@ -128,31 +171,44 @@ function TableForm() {
             <XBtn onClick={hideForm}>
               <i className="fa-solid fa-xmark fa-3x"></i>
             </XBtn>
-            <InnerDiv>
+            <ScoreDiv style={{ flexDirection: "row" }}>
               <Text htmlFor="score">What score today?</Text>
-              <Button whileTap={{ scale: 0.97 }} onClick={toggleShowSelect}>
-                Score {score}
-              </Button>
-              <AnimatePresence>
-                {showSelect && (
-                  <Lists
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                  >
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => (
-                      <List
-                        onClick={() => clickScore(item)}
-                        whileHover={{ backgroundColor: "#e7edfe" }}
-                        key={item}
-                      >
-                        {item}
-                      </List>
-                    ))}
-                  </Lists>
-                )}
-              </AnimatePresence>
-            </InnerDiv>
+              <div style={{ position: "relative" }}>
+                <Button whileTap={{ scale: 0.97 }} onClick={toggleShowSelect}>
+                  Score {score}
+                  <motion.i
+                    variants={arrowVariants}
+                    custom={showSelect}
+                    initial="start"
+                    animate="move"
+                    style={{ originY: 0.55, marginLeft: "10px" }}
+                    className="fa-solid fa-caret-up fa-lg"
+                  ></motion.i>
+                </Button>
+                <AnimatePresence>
+                  {showSelect && (
+                    <Lists
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{
+                        scale: 1,
+                        opacity: 1,
+                      }}
+                      exit={{ opacity: 0 }}
+                    >
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => (
+                        <List
+                          onClick={() => clickScore(item)}
+                          whileHover={{ backgroundColor: "#e7edfe" }}
+                          key={item}
+                        >
+                          {item}
+                        </List>
+                      ))}
+                    </Lists>
+                  )}
+                </AnimatePresence>
+              </div>
+            </ScoreDiv>
             <InnerDiv>
               <Text>Who with?</Text>
               <Checkboxes>
