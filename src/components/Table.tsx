@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { motion, Variants, AnimatePresence } from "framer-motion";
+import { Switch, Route, Link } from "react-router-dom";
+import SelectedDate from "./SelectedDate";
 
 const Calendar = styled.div`
   width: 500px;
@@ -73,6 +75,7 @@ const Day = styled(motion.div)`
   justify-content: center;
   font-weight: 600;
   height: 70px;
+  cursor: pointer;
 `;
 
 const nameVariant: Variants = {
@@ -191,10 +194,34 @@ function Table() {
               item <= 0 ? (
                 <Day key={item} style={{ visibility: "hidden" }}></Day>
               ) : (
-                <Day key={item}>{item}</Day>
+                <Link
+                  key={item}
+                  to={`/${
+                    year +
+                    "" +
+                    (month < 10 ? "0" + month : month) +
+                    (item < 10 ? "0" + item : item)
+                  }`}
+                >
+                  <Day
+                    id={
+                      year +
+                      "" +
+                      (month < 10 ? "0" + month : month) +
+                      (item < 10 ? "0" + item : item)
+                    }
+                  >
+                    {item}
+                  </Day>
+                </Link>
               )
             )}
           </AnimatePresence>
+          <Switch>
+            <Route path="/:dateId">
+              <SelectedDate />
+            </Route>
+          </Switch>
         </Week>
       </Month>
     </Calendar>

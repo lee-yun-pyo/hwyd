@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import Table from "./components/Table";
 import TableForm from "./components/TableForm";
+import Router from "./Router";
 
 const Container = styled.div`
   display: flex;
@@ -13,8 +14,7 @@ const Container = styled.div`
 function App() {
   return (
     <Container>
-      <Table />
-      <TableForm />
+      <Router />
     </Container>
   );
 }
