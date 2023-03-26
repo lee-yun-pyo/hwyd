@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { motion, Variants, AnimatePresence } from "framer-motion";
 import { useSetRecoilState } from "recoil";
 import { formState } from "../atom";
+import { useHistory } from "react-router-dom";
 
 const Form = styled.form`
   background-color: rgba(255, 255, 255, 0.8);
@@ -146,12 +147,18 @@ const arrowVariants: Variants = {
   },
 };
 
-function TableForm() {
+interface ITableForm {
+  dateId?: string;
+}
+
+function TableForm({ dateId }: ITableForm) {
+  let history = useHistory();
   const setForm = useSetRecoilState(formState);
   const { register, handleSubmit } = useForm();
   const [showSelect, setShowSelect] = useState(false);
   const [score, setScore] = useState<number>(0);
   const [etc, setEtc] = useState(false);
+
   const toggleShowSelect = (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setShowSelect((prev) => !prev);
@@ -162,13 +169,15 @@ function TableForm() {
   };
   const hideForm = () => {
     setForm(false);
-    // url도 변경
+    history.push("/");
   };
   return (
     <>
       <Form>
         <>
-          <Title>2023.03.23</Title>
+          <Title>
+            {dateId && dateId.slice(4, 6) + "월 " + dateId.slice(6) + "일"}
+          </Title>
           <XBtn onClick={hideForm}>
             <i className="fa-solid fa-xmark fa-3x"></i>
           </XBtn>

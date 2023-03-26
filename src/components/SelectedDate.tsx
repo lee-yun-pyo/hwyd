@@ -30,7 +30,8 @@ const StartDiv = styled.div`
 
 function SelectedDate() {
   const [form, setForm] = useRecoilState(formState);
-  // let match = useRouteMatch<{ dateId: string }>("/:dateId");
+  let match = useRouteMatch<{ dateId: string }>("/:dateId");
+  const dateId = match?.params.dateId;
   // DB에서 dateId와 같은 데이터 찾아서 화면에 출력
   // 없으면 '추가하기' 버튼 생성
   const toggleShowForm = () => {
@@ -39,7 +40,7 @@ function SelectedDate() {
   return (
     <>
       {form ? (
-        <TableForm />
+        <TableForm dateId={dateId} />
       ) : (
         <StartDiv>
           <div></div>

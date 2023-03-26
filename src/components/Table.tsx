@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { motion, Variants, AnimatePresence } from "framer-motion";
-import { Switch, Route, Link } from "react-router-dom";
+import { Switch, Route, Link, useHistory } from "react-router-dom";
 import SelectedDate from "./SelectedDate";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { formState } from "../atom";
 
 const Calendar = styled.div`
@@ -117,11 +117,12 @@ const weekVariant: Variants = {
 };
 
 function Table() {
+  let history = useHistory();
   const [year, setYear] = useState<number>(2023);
   const [[month, engMonth], setMonth] = useState<[number, string]>([1, "Jan"]);
   const [date, setDate] = useState<number[]>([]);
   const [direction, setDirection] = useState<number>(0);
-  const [form, setForm] = useRecoilState(formState);
+  const setForm = useSetRecoilState(formState);
   useEffect(() => {
     const today = new Date();
     setYear(today.getFullYear());
@@ -147,6 +148,7 @@ function Table() {
     setYear((prev) => (month === 1 ? prev - 1 : prev));
     setDirection(newDirection);
     setForm(false);
+    history.push("/");
   };
   const goNextMonth = (newDirection: number) => {
     const today = new Date(`${year}-${month + 1}`);
@@ -156,6 +158,7 @@ function Table() {
     setYear((prev) => (month === 12 ? prev + 1 : prev));
     setDirection(newDirection);
     setForm(false);
+    history.push("/");
   };
   const toggleShowForm = () => {
     setForm(false);
