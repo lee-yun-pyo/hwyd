@@ -46,6 +46,7 @@ const Month = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin-bottom: 40px;
 `;
 
 const DayOfNames = styled.div`
@@ -217,13 +218,13 @@ function Table() {
               )
             )}
           </AnimatePresence>
-          <Switch>
-            <Route path="/:dateId">
-              <SelectedDate />
-            </Route>
-          </Switch>
         </Week>
       </Month>
+      <Switch>
+        <Route path="/:dateId">
+          <SelectedDate />
+        </Route>
+      </Switch>
     </Calendar>
   );
 }

@@ -1,6 +1,4 @@
 import styled from "styled-components";
-import Table from "./components/Table";
-import TableForm from "./components/TableForm";
 import Router from "./Router";
 
 const Container = styled.div`
