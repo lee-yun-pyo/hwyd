@@ -2,6 +2,8 @@ import styled from "styled-components";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { motion, Variants, AnimatePresence } from "framer-motion";
+import { useSetRecoilState } from "recoil";
+import { formState } from "../atom";
 
 const Form = styled.form`
   background-color: rgba(255, 255, 255, 0.8);
@@ -145,10 +147,10 @@ const arrowVariants: Variants = {
 };
 
 function TableForm() {
+  const setForm = useSetRecoilState(formState);
   const { register, handleSubmit } = useForm();
   const [showSelect, setShowSelect] = useState(false);
   const [score, setScore] = useState<number>(0);
-  const [showForm, setShowForm] = useState(true);
   const [etc, setEtc] = useState(false);
   const toggleShowSelect = (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -159,134 +161,132 @@ function TableForm() {
     setShowSelect((prev) => !prev);
   };
   const hideForm = () => {
-    setShowForm((prev) => !prev);
+    setForm(false);
     // url도 변경
   };
   return (
     <>
-      {showForm && (
-        <Form>
-          <>
-            <Title>2023.03.23</Title>
-            <XBtn onClick={hideForm}>
-              <i className="fa-solid fa-xmark fa-3x"></i>
-            </XBtn>
-            <ScoreDiv style={{ flexDirection: "row" }}>
-              <Text htmlFor="score">What score today?</Text>
-              <div style={{ position: "relative" }}>
-                <Button whileTap={{ scale: 0.97 }} onClick={toggleShowSelect}>
-                  Score {score}
-                  <motion.i
-                    variants={arrowVariants}
-                    custom={showSelect}
-                    initial="start"
-                    animate="move"
-                    style={{ originY: 0.55, marginLeft: "10px" }}
-                    className="fa-solid fa-caret-up fa-lg"
-                  ></motion.i>
-                </Button>
-                <AnimatePresence>
-                  {showSelect && (
-                    <Lists
-                      initial={{ scale: 0, opacity: 0 }}
-                      animate={{
-                        scale: 1,
-                        opacity: 1,
-                      }}
-                      exit={{ opacity: 0 }}
-                    >
-                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => (
-                        <List
-                          onClick={() => clickScore(item)}
-                          whileHover={{ backgroundColor: "#e7edfe" }}
-                          key={item}
-                        >
-                          {item}
-                        </List>
-                      ))}
-                    </Lists>
-                  )}
-                </AnimatePresence>
-              </div>
-            </ScoreDiv>
-            <InnerDiv>
-              <Text>Who with?</Text>
-              <Checkboxes>
-                <Checkbox>
-                  <Input
-                    type="checkbox"
-                    style={{ width: 18, height: 18 }}
-                    id="alone"
-                    {...register("done", { required: true })}
-                  />
-                  <CheckLabel htmlFor="alone">Alone</CheckLabel>
-                </Checkbox>
-                <Checkbox>
-                  <Input
-                    type="checkbox"
-                    id="family"
-                    style={{ width: 18, height: 18 }}
-                    {...register("done", { required: true })}
-                  />
-                  <CheckLabel htmlFor="family">Family</CheckLabel>
-                </Checkbox>
-                <Checkbox>
-                  <Input
-                    type="checkbox"
-                    id="friends"
-                    style={{ width: 18, height: 18 }}
-                    {...register("done", { required: true })}
-                  />
-                  <CheckLabel htmlFor="friends">Friends</CheckLabel>
-                </Checkbox>
-                <Checkbox>
-                  <Input
-                    type="checkbox"
-                    id="etc"
-                    style={{ width: 18, height: 18 }}
-                    {...register("done", { required: true })}
-                    onChange={() => {
-                      setEtc((prev) => !prev);
+      <Form>
+        <>
+          <Title>2023.03.23</Title>
+          <XBtn onClick={hideForm}>
+            <i className="fa-solid fa-xmark fa-3x"></i>
+          </XBtn>
+          <ScoreDiv style={{ flexDirection: "row" }}>
+            <Text htmlFor="score">What score today?</Text>
+            <div style={{ position: "relative" }}>
+              <Button whileTap={{ scale: 0.97 }} onClick={toggleShowSelect}>
+                Score {score}
+                <motion.i
+                  variants={arrowVariants}
+                  custom={showSelect}
+                  initial="start"
+                  animate="move"
+                  style={{ originY: 0.55, marginLeft: "10px" }}
+                  className="fa-solid fa-caret-up fa-lg"
+                ></motion.i>
+              </Button>
+              <AnimatePresence>
+                {showSelect && (
+                  <Lists
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{
+                      scale: 1,
+                      opacity: 1,
                     }}
-                  />
-                  <CheckLabel htmlFor="etc">etc.</CheckLabel>
-                </Checkbox>
-              </Checkboxes>
-              {etc && (
+                    exit={{ opacity: 0 }}
+                  >
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => (
+                      <List
+                        onClick={() => clickScore(item)}
+                        whileHover={{ backgroundColor: "#e7edfe" }}
+                        key={item}
+                      >
+                        {item}
+                      </List>
+                    ))}
+                  </Lists>
+                )}
+              </AnimatePresence>
+            </div>
+          </ScoreDiv>
+          <InnerDiv>
+            <Text>Who with?</Text>
+            <Checkboxes>
+              <Checkbox>
                 <Input
-                  style={{ marginTop: 15 }}
-                  {...register("etc")}
-                  placeholder="Who with?"
+                  type="checkbox"
+                  style={{ width: 18, height: 18 }}
+                  id="alone"
+                  {...register("done", { required: true })}
                 />
-              )}
-            </InnerDiv>
-            <InnerDiv>
-              <Text htmlFor="done">What do?</Text>
+                <CheckLabel htmlFor="alone">Alone</CheckLabel>
+              </Checkbox>
+              <Checkbox>
+                <Input
+                  type="checkbox"
+                  id="family"
+                  style={{ width: 18, height: 18 }}
+                  {...register("done", { required: true })}
+                />
+                <CheckLabel htmlFor="family">Family</CheckLabel>
+              </Checkbox>
+              <Checkbox>
+                <Input
+                  type="checkbox"
+                  id="friends"
+                  style={{ width: 18, height: 18 }}
+                  {...register("done", { required: true })}
+                />
+                <CheckLabel htmlFor="friends">Friends</CheckLabel>
+              </Checkbox>
+              <Checkbox>
+                <Input
+                  type="checkbox"
+                  id="etc"
+                  style={{ width: 18, height: 18 }}
+                  {...register("done", { required: true })}
+                  onChange={() => {
+                    setEtc((prev) => !prev);
+                  }}
+                />
+                <CheckLabel htmlFor="etc">etc.</CheckLabel>
+              </Checkbox>
+            </Checkboxes>
+            {etc && (
               <Input
-                id="done"
-                {...register("done", { required: true })}
-                placeholder="What did you do today?"
+                style={{ marginTop: 15 }}
+                {...register("etc")}
+                placeholder="Who with?"
               />
-            </InnerDiv>
-            <InnerDiv>
-              <Text htmlFor="memo">Memo</Text>
-              <TextArea
-                id="memo"
-                rows={5}
-                cols={35}
-                {...register("memo", { maxLength: 100 })}
-                placeholder="Write Anything"
-                maxLength={100}
-              />
-            </InnerDiv>
-          </>
-          <Button
-            style={{ textAlign: "center", marginTop: 7, width: "fit-content" }}
-          >
-            Submit
-          </Button>
-        </Form>
-      )}
+            )}
+          </InnerDiv>
+          <InnerDiv>
+            <Text htmlFor="done">What do?</Text>
+            <Input
+              id="done"
+              {...register("done", { required: true })}
+              placeholder="What did you do today?"
+            />
+          </InnerDiv>
+          <InnerDiv>
+            <Text htmlFor="memo">Memo</Text>
+            <TextArea
+              id="memo"
+              rows={5}
+              cols={35}
+              {...register("memo", { maxLength: 100 })}
+              placeholder="Write Anything"
+              maxLength={100}
+            />
+          </InnerDiv>
+        </>
+        <Button
+          style={{ textAlign: "center", marginTop: 7, width: "fit-content" }}
+        >
+          Submit
+        </Button>
+      </Form>
     </>
   );
 }

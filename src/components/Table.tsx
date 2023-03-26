@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { motion, Variants, AnimatePresence } from "framer-motion";
 import { Switch, Route, Link } from "react-router-dom";
 import SelectedDate from "./SelectedDate";
+import { useRecoilState } from "recoil";
+import { formState } from "../atom";
 
 const Calendar = styled.div`
   width: 500px;
@@ -119,6 +121,7 @@ function Table() {
   const [[month, engMonth], setMonth] = useState<[number, string]>([1, "Jan"]);
   const [date, setDate] = useState<number[]>([]);
   const [direction, setDirection] = useState<number>(0);
+  const [form, setForm] = useRecoilState(formState);
   useEffect(() => {
     const today = new Date();
     setYear(today.getFullYear());
@@ -143,6 +146,7 @@ function Table() {
     );
     setYear((prev) => (month === 1 ? prev - 1 : prev));
     setDirection(newDirection);
+    setForm(false);
   };
   const goNextMonth = (newDirection: number) => {
     const today = new Date(`${year}-${month + 1}`);
@@ -151,6 +155,10 @@ function Table() {
     );
     setYear((prev) => (month === 12 ? prev + 1 : prev));
     setDirection(newDirection);
+    setForm(false);
+  };
+  const toggleShowForm = () => {
+    setForm(false);
   };
   return (
     <Calendar>
@@ -205,6 +213,7 @@ function Table() {
                   }`}
                 >
                   <Day
+                    onClick={toggleShowForm}
                     id={
                       year +
                       "" +

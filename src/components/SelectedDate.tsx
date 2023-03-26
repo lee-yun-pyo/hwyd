@@ -1,7 +1,8 @@
-import { useState } from "react";
 import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import TableForm from "./TableForm";
+import { useRecoilState } from "recoil";
+import { formState } from "../atom";
 
 const StartDiv = styled.div`
   display: flex;
@@ -28,25 +29,23 @@ const StartDiv = styled.div`
 `;
 
 function SelectedDate() {
-  const [showForm, setShowForm] = useState<boolean>(false);
-  let match = useRouteMatch<{ dateId: string }>("/:dateId");
-  console.log(match?.params.dateId);
+  const [form, setForm] = useRecoilState(formState);
+  // let match = useRouteMatch<{ dateId: string }>("/:dateId");
   // DB에서 dateId와 같은 데이터 찾아서 화면에 출력
   // 없으면 '추가하기' 버튼 생성
   const toggleShowForm = () => {
-    setShowForm((prev) => !prev);
+    setForm((prev) => !prev);
   };
-  console.log(showForm);
   return (
     <>
-      {!showForm ? (
+      {form ? (
+        <TableForm />
+      ) : (
         <StartDiv>
           <div></div>
           <span>오늘 하루를 기록하세요</span>
           <button onClick={toggleShowForm}>기록하기</button>
         </StartDiv>
-      ) : (
-        <TableForm />
       )}
     </>
   );
