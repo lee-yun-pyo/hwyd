@@ -70,8 +70,8 @@ const Week = styled(motion.div)`
   gap: 5px;
 `;
 
-const Day = styled(motion.div)`
-  background-color: aliceblue;
+const Day = styled(motion.div)<{ istoday: number }>`
+  background-color: ${(props) => (props.istoday ? "tomato" : "aliceblue")};
   border-radius: 7px;
   display: flex;
   align-items: center;
@@ -123,8 +123,18 @@ function Table() {
   const [date, setDate] = useState<number[]>([]);
   const [direction, setDirection] = useState<number>(0);
   const setForm = useSetRecoilState(formState);
+  const today = new Date();
+  const today1 =
+    String(today.getFullYear()) +
+    String(
+      today.getMonth() + 1 < 10
+        ? "0" + String(today.getMonth() + 1)
+        : today.getMonth() + 1
+    ) +
+    String(
+      today.getDate() < 10 ? "0" + String(today.getDate()) : today.getDate()
+    );
   useEffect(() => {
-    const today = new Date();
     setYear(today.getFullYear());
     setMonth([today.getMonth() + 1, today.toString().slice(4, 7)]);
   }, []);
@@ -141,9 +151,11 @@ function Table() {
     setDate(dates);
   }, [month, year]);
   const goPreviousMonth = (newDirection: number) => {
-    const today = new Date(`${year}-${month - 1}`);
+    const thisMonth = new Date(`${year}-${month - 1}`);
     setMonth((prev) =>
-      prev[0] === 1 ? [12, "Dec"] : [prev[0] - 1, today.toString().slice(4, 7)]
+      prev[0] === 1
+        ? [12, "Dec"]
+        : [prev[0] - 1, thisMonth.toString().slice(4, 7)]
     );
     setYear((prev) => (month === 1 ? prev - 1 : prev));
     setDirection(newDirection);
@@ -151,9 +163,11 @@ function Table() {
     history.push("/");
   };
   const goNextMonth = (newDirection: number) => {
-    const today = new Date(`${year}-${month + 1}`);
+    const thisMonth = new Date(`${year}-${month + 1}`);
     setMonth((prev) =>
-      prev[0] === 12 ? [1, "Jan"] : [prev[0] + 1, today.toString().slice(4, 7)]
+      prev[0] === 12
+        ? [1, "Jan"]
+        : [prev[0] + 1, thisMonth.toString().slice(4, 7)]
     );
     setYear((prev) => (month === 12 ? prev + 1 : prev));
     setDirection(newDirection);
@@ -204,7 +218,11 @@ function Table() {
           <AnimatePresence initial={false} custom={direction}>
             {date.map((item) =>
               item <= 0 ? (
-                <Day key={item} style={{ visibility: "hidden" }}></Day>
+                <Day
+                  istoday={false ? 1 : 0}
+                  key={item}
+                  style={{ visibility: "hidden" }}
+                ></Day>
               ) : (
                 <Link
                   key={item}
@@ -222,6 +240,16 @@ function Table() {
                       "" +
                       (month < 10 ? "0" + month : month) +
                       (item < 10 ? "0" + item : item)
+                    }
+                    istoday={
+                      String(
+                        year +
+                          "" +
+                          (month < 10 ? "0" + month : month) +
+                          (item < 10 ? "0" + item : item)
+                      ) === today1
+                        ? 1
+                        : 0
                     }
                   >
                     {item}
