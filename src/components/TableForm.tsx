@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { motion, Variants, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useSetRecoilState } from "recoil";
 import { formState } from "../atom";
 import { useHistory } from "react-router-dom";
@@ -52,16 +52,15 @@ const Button = styled(motion.button)`
   cursor: pointer;
 `;
 
-const Lists = styled(motion.ul)`
-  background-color: azure;
+const Lists = styled(motion.select)`
+  background-color: rgba(255, 255, 255, 0.8);
   border-radius: 6px;
-  position: absolute;
-  top: 60px;
+  border: none;
   padding: 10px;
-  overflow-y: scroll;
-  max-height: 200px;
-  width: 100%;
   cursor: pointer;
+  font-size: 24px;
+  font-weight: 600;
+  outline: none;
   &::-webkit-scrollbar-track {
     border-radius: 100px;
     border-top-left-radius: 0px;
@@ -79,21 +78,28 @@ const Lists = styled(motion.ul)`
   }
 `;
 
-const List = styled(motion.li)`
-  padding: 10px;
-  font-size: 18px;
+const List = styled(motion.option)`
+  padding: 15px;
+  font-size: 30px;
   font-weight: 600;
   border-radius: 10px;
   margin-bottom: 5px;
   cursor: pointer;
 `;
 
-const Input = styled.input`
+const Input = styled.input<{ error: string | undefined }>`
+  background-color: ${(props) =>
+    props.error ? "rgba(255, 99, 71, 0.4)" : "none"};
   padding: 10px;
   font-size: 20px;
   border-radius: 8px;
-  border: none;
+  border: ${(props) => (props.error ? "1px solid tomato" : "none")};
   outline: none;
+`;
+
+const RadioInput = styled.input`
+  width: 18px;
+  height: 18px;
 `;
 
 const TextArea = styled.textarea`
@@ -120,6 +126,7 @@ const CheckLabel = styled.label`
   font-size: 18px;
   font-weight: 600;
   margin-left: 3px;
+  cursor: pointer;
 `;
 
 const XBtn = styled.button`
@@ -131,141 +138,128 @@ const XBtn = styled.button`
   top: 15px;
 `;
 
-const arrowVariants: Variants = {
-  start: (showSelect: boolean) => {
-    return {
-      rotate: showSelect ? 180 : 0,
-    };
-  },
-  move: (showSelect: boolean) => {
-    return {
-      rotate: showSelect ? 0 : 180,
-      transition: {
-        duration: 0.2,
-      },
-    };
-  },
-};
-
 interface ITableForm {
   dateId?: string;
+}
+
+interface IForm {
+  score: string;
+  with: string;
+  etcText?: string;
+  done: string;
+  memo?: string;
 }
 
 function TableForm({ dateId }: ITableForm) {
   let history = useHistory();
   const setForm = useSetRecoilState(formState);
-  const { register, handleSubmit } = useForm();
-  const [showSelect, setShowSelect] = useState(false);
-  const [score, setScore] = useState<number>(0);
-  const [etc, setEtc] = useState(false);
-
-  const toggleShowSelect = (event: React.FormEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    setShowSelect((prev) => !prev);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IForm>();
+  const [isEtc, setIsEtc] = useState(false);
+  const onSubmit = (data: any) => {
+    console.log(data);
+    // string 값들 trim()화 필요
+    // etc선택후 다른 걸 선택했을 때 etcText 값이 나타나지 않도록
+    // radio 선택하지 않고 submit 했을 때 에러처리
   };
-  const clickScore = (score: number) => {
-    setScore(score);
-    setShowSelect((prev) => !prev);
-  };
-  const hideForm = () => {
+  const hideTableForm = () => {
     setForm(false);
     history.push("/");
   };
+  const hideEtcForm = () => {
+    setIsEtc(false);
+  };
   return (
     <>
-      <Form>
+      <Form onSubmit={handleSubmit(onSubmit)}>
         <>
           <Title>
             {dateId && dateId.slice(4, 6) + "월 " + dateId.slice(6) + "일"}
           </Title>
-          <XBtn onClick={hideForm}>
+          <XBtn onClick={hideTableForm}>
             <i className="fa-solid fa-xmark fa-3x"></i>
           </XBtn>
           <ScoreDiv style={{ flexDirection: "row" }}>
             <Text htmlFor="score">What score today?</Text>
-            <div style={{ position: "relative" }}>
-              <Button whileTap={{ scale: 0.97 }} onClick={toggleShowSelect}>
-                Score {score}
-                <motion.i
-                  variants={arrowVariants}
-                  custom={showSelect}
-                  initial="start"
-                  animate="move"
-                  style={{ originY: 0.55, marginLeft: "10px" }}
-                  className="fa-solid fa-caret-up fa-lg"
-                ></motion.i>
-              </Button>
-              <AnimatePresence>
-                {showSelect && (
-                  <Lists
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{
-                      scale: 1,
-                      opacity: 1,
-                    }}
-                    exit={{ opacity: 0 }}
+            <AnimatePresence>
+              <Lists
+                whileTap={{ scale: 0.97 }}
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{
+                  scale: 1,
+                  opacity: 1,
+                }}
+                exit={{ opacity: 0 }}
+                {...register("score", { required: true })}
+              >
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => (
+                  <List
+                    whileHover={{ backgroundColor: "#e7edfe" }}
+                    key={item}
+                    value={item}
                   >
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => (
-                      <List
-                        onClick={() => clickScore(item)}
-                        whileHover={{ backgroundColor: "#e7edfe" }}
-                        key={item}
-                      >
-                        {item}
-                      </List>
-                    ))}
-                  </Lists>
-                )}
-              </AnimatePresence>
-            </div>
+                    {item}
+                  </List>
+                ))}
+              </Lists>
+            </AnimatePresence>
           </ScoreDiv>
           <InnerDiv>
             <Text>Who with?</Text>
             <Checkboxes>
               <Checkbox>
-                <Input
-                  type="checkbox"
-                  style={{ width: 18, height: 18 }}
+                <RadioInput
+                  type="radio"
                   id="alone"
-                  {...register("done", { required: true })}
+                  {...register("with", { required: true })}
+                  value="alone"
+                  onChange={hideEtcForm}
                 />
                 <CheckLabel htmlFor="alone">Alone</CheckLabel>
               </Checkbox>
               <Checkbox>
-                <Input
-                  type="checkbox"
+                <RadioInput
+                  type="radio"
                   id="family"
-                  style={{ width: 18, height: 18 }}
-                  {...register("done", { required: true })}
+                  {...register("with", { required: true })}
+                  value="family"
+                  onChange={hideEtcForm}
                 />
                 <CheckLabel htmlFor="family">Family</CheckLabel>
               </Checkbox>
               <Checkbox>
-                <Input
-                  type="checkbox"
+                <RadioInput
+                  type="radio"
                   id="friends"
-                  style={{ width: 18, height: 18 }}
-                  {...register("done", { required: true })}
+                  {...register("with", { required: true })}
+                  value="friends"
+                  onChange={hideEtcForm}
                 />
                 <CheckLabel htmlFor="friends">Friends</CheckLabel>
               </Checkbox>
               <Checkbox>
-                <Input
-                  type="checkbox"
+                <RadioInput
+                  type="radio"
                   id="etc"
-                  style={{ width: 18, height: 18 }}
-                  {...register("done", { required: true })}
+                  {...register("with", { required: true })}
+                  value="etc"
                   onChange={() => {
-                    setEtc((prev) => !prev);
+                    setIsEtc((prev) => !prev);
                   }}
                 />
                 <CheckLabel htmlFor="etc">etc.</CheckLabel>
               </Checkbox>
             </Checkboxes>
-            {etc && (
+            {isEtc && (
               <Input
                 style={{ marginTop: 15 }}
-                {...register("etc")}
+                error={errors.etcText?.message}
+                {...register("etcText", {
+                  required: isEtc ? "누구랑 함께했나요?" : false,
+                })}
                 placeholder="Who with?"
               />
             )}
@@ -274,7 +268,10 @@ function TableForm({ dateId }: ITableForm) {
             <Text htmlFor="done">What do?</Text>
             <Input
               id="done"
-              {...register("done", { required: true })}
+              error={errors.done?.message}
+              {...register("done", {
+                required: "오늘 기억남는 일을 적어주세요",
+              })}
               placeholder="What did you do today?"
             />
           </InnerDiv>
