@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import Router from "./Router";
+import { firebase } from "./fbase";
 
 const Container = styled.div`
   display: flex;
@@ -10,6 +11,7 @@ const Container = styled.div`
 `;
 
 function App() {
+  console.log(firebase);
   return (
     <Container>
       <Router />
