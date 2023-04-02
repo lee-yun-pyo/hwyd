@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import Router from "./Router";
-import { firebase } from "./fbase";
+import { auth } from "./fbase";
+import { useState } from "react";
 
 const Container = styled.div`
   display: flex;
@@ -11,10 +12,10 @@ const Container = styled.div`
 `;
 
 function App() {
-  console.log(firebase);
+  const [loggedIn, setLoggedIn] = useState(Boolean(auth.currentUser));
   return (
     <Container>
-      <Router />
+      <Router isLoggedIn={loggedIn} />
     </Container>
   );
 }
