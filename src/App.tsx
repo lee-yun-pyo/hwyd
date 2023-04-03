@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import Router from "./Router";
 import { auth } from "./fbase";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { onAuthStateChanged } from "firebase/auth";
 
 const Container = styled.div`
   display: flex;
@@ -12,11 +13,20 @@ const Container = styled.div`
 `;
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(Boolean(auth.currentUser));
+  const [init, setInit] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setLoggedIn(true);
+      } else {
+        setLoggedIn(false);
+      }
+      setInit(true);
+    });
+  }, []);
   return (
-    <Container>
-      <Router isLoggedIn={loggedIn} />
-    </Container>
+    <Container>{init ? <Router isLoggedIn={loggedIn} /> : "Loading"}</Container>
   );
 }
 

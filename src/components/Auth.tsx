@@ -1,6 +1,6 @@
-import { useForm } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { auth } from "../fbase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -8,27 +8,42 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
+interface IFormInput {
+  email: string;
+  password: string;
+}
+
 function Auth() {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
-  const onSubmit = (data: any) => {
-    console.log(data);
-    createUserWithEmailAndPassword(auth, data.email, data.password).then(
-      (userCredential) => {
-        // Signed in
-        const user = userCredential.user;
+  const { register, handleSubmit, setError } = useForm<IFormInput>();
+  const onLogin: SubmitHandler<IFormInput> = async (data) => {
+    try {
+      await signInWithEmailAndPassword(auth, data.email, data.password);
+    } catch (error: any) {
+      if (error) {
+        setError(
+          "email",
+          {
+            type: "manual",
+            message: "이메일 또는 비밀번호가 일치하지 않습니다.",
+          },
+          { shouldFocus: true }
+        );
       }
-    );
+    }
   };
   return (
     <Container>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <input {...register("email", { required: true })} type="email" />
-        <input {...register("password", { required: true })} type="password" />
+      <form onSubmit={handleSubmit(onLogin)}>
+        <input
+          {...register("email", { required: true })}
+          type="email"
+          placeholder="Email 입력"
+        />
+        <input
+          {...register("password", { required: true })}
+          type="password"
+          placeholder="password 입력"
+        />
         <input type="submit" />
       </form>
       <div>
