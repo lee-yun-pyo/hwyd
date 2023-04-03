@@ -1,5 +1,6 @@
 import { HashRouter, Switch, Route } from "react-router-dom";
 import Auth from "./components/Auth";
+import SignUp from "./components/SignUp";
 import Home from "./Home";
 
 interface IRouter {
@@ -15,9 +16,14 @@ function Router({ isLoggedIn }: IRouter) {
             <Home />
           </Route>
         ) : (
-          <Route path="/">
-            <Auth />
-          </Route>
+          <>
+            <Route exact path="/">
+              <Auth />
+            </Route>
+            <Route path="/signup">
+              <SignUp />
+            </Route>
+          </>
         )}
       </Switch>
     </HashRouter>
