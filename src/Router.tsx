@@ -16,14 +16,14 @@ function Router({ isLoggedIn }: IRouter) {
             <Home />
           </Route>
         ) : (
-          <>
+          <Switch>
             <Route exact path="/">
               <Auth />
             </Route>
             <Route path="/signup">
               <SignUp />
             </Route>
-          </>
+          </Switch>
         )}
       </Switch>
     </HashRouter>
