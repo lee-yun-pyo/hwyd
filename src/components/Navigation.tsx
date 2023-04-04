@@ -15,7 +15,7 @@ function Navigation() {
   };
   return (
     <Container>
-      <Text>{user?.email}</Text>
+      <Text>{user?.displayName || "사용자"}</Text>
       <button onClick={onLogout}>Logout</button>
     </Container>
   );

@@ -1,6 +1,10 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { auth } from "../fbase";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+} from "firebase/auth";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -31,6 +35,10 @@ function Auth() {
       }
     }
   };
+  const googleLogin = async () => {
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(auth, provider);
+  };
   return (
     <Container>
       <form onSubmit={handleSubmit(onLogin)}>
@@ -47,7 +55,7 @@ function Auth() {
         <input type="submit" />
       </form>
       <div>
-        <button>LogIn with Google</button>
+        <button onClick={googleLogin}>LogIn with Google</button>
       </div>
       <div>
         <button>회원가입</button>
