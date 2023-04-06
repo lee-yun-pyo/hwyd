@@ -2,6 +2,7 @@ import { HashRouter, Switch, Route } from "react-router-dom";
 import Auth from "./components/Auth";
 import SignUp from "./components/SignUp";
 import Home from "./Home";
+import UpdateProfile from "./components/UpdateProfile";
 
 interface IRouter {
   isLoggedIn: boolean;
@@ -12,9 +13,14 @@ function Router({ isLoggedIn }: IRouter) {
     <HashRouter>
       <Switch>
         {isLoggedIn ? (
-          <Route path="/">
-            <Home />
-          </Route>
+          <>
+            <Route path="/">
+              <Home />
+            </Route>
+            <Route path="/update-profile">
+              <UpdateProfile />
+            </Route>
+          </>
         ) : (
           <Switch>
             <Route exact path="/">
