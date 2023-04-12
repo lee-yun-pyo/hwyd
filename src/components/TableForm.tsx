@@ -1,10 +1,12 @@
 import styled from "styled-components";
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { motion, AnimatePresence } from "framer-motion";
-import { useSetRecoilState } from "recoil";
-import { formState } from "../atom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { formState, userIdState } from "../atom";
 import { useHistory } from "react-router-dom";
+import { doc, getFirestore, setDoc } from "firebase/firestore";
+import { fbApp } from "../fbase";
 
 const Form = styled.form`
   background-color: rgba(255, 255, 255, 0.8);
@@ -153,14 +155,26 @@ interface IForm {
 function TableForm({ dateId }: ITableForm) {
   let history = useHistory();
   const setForm = useSetRecoilState(formState);
+  const userId = useRecoilValue(userIdState);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<IForm>();
   const [isEtc, setIsEtc] = useState(false);
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const db = getFirestore(fbApp);
+  const onSubmit: SubmitHandler<IForm> = async (data) => {
+    if (userId) {
+      await setDoc(doc(db, String(dateId), userId), {
+        score: +data.score,
+        with: data.with,
+        done: data.done.trim(),
+        memo: data.memo || "",
+        etc: data.etcText || "",
+      });
+      setForm(false);
+    }
+    // console.log("Document written with ID: ", docRef.id);
     // string 값들 trim()화 필요
     // etc선택후 다른 걸 선택했을 때 etcText 값이 나타나지 않도록
     // radio 선택하지 않고 submit 했을 때 에러처리
@@ -179,7 +193,7 @@ function TableForm({ dateId }: ITableForm) {
           <Title>
             {dateId && dateId.slice(4, 6) + "월 " + dateId.slice(6) + "일"}
           </Title>
-          <XBtn onClick={hideTableForm}>
+          <XBtn type="button" onClick={hideTableForm}>
             <i className="fa-solid fa-xmark fa-3x"></i>
           </XBtn>
           <ScoreDiv style={{ flexDirection: "row" }}>
@@ -288,6 +302,7 @@ function TableForm({ dateId }: ITableForm) {
           </InnerDiv>
         </>
         <Button
+          type="submit"
           style={{ textAlign: "center", marginTop: 7, width: "fit-content" }}
         >
           Submit
