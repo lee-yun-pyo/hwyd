@@ -1,8 +1,17 @@
 import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import TableForm from "./TableForm";
-import { useRecoilState } from "recoil";
-import { formState } from "../atom";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { formState, userIdState } from "../atom";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
+import { fbApp } from "../fbase";
+import { useEffect, useState } from "react";
+
+const Content = styled.div`
+  color: rgba(255, 255, 255, 0.8);
+`;
+
+const Head = styled.div``;
 
 const StartDiv = styled.div`
   display: flex;
@@ -28,12 +37,36 @@ const StartDiv = styled.div`
   }
 `;
 
+interface IFormData {
+  score: number;
+  with: string;
+  etc?: string;
+  done: string;
+  memo?: string;
+}
+
 function SelectedDate() {
   const [form, setForm] = useRecoilState(formState);
+  const userId = useRecoilValue(userIdState);
   let match = useRouteMatch<{ dateId: string }>("/:dateId");
   const dateId = match?.params.dateId;
-  // DB에서 dateId와 같은 데이터 찾아서 화면에 출력
-  // 없으면 '추가하기' 버튼 생성
+  const [formData, setFormData] = useState<IFormData | null>(null);
+  const db = getFirestore(fbApp);
+  useEffect(() => {
+    async function getData(id: string) {
+      if (id && userId) {
+        const docRef = doc(db, id, userId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data() as IFormData;
+          setFormData(data);
+        } else {
+          setFormData(null);
+        }
+      }
+    }
+    if (dateId) getData(dateId);
+  }, [dateId]);
   const toggleShowForm = () => {
     setForm((prev) => !prev);
   };
@@ -41,6 +74,19 @@ function SelectedDate() {
     <>
       {form ? (
         <TableForm dateId={dateId} />
+      ) : formData ? (
+        <Content>
+          <Head>{dateId}</Head>
+          <span>Score: {formData.score}</span>
+          <br />
+          <span>
+            With: {formData.with === "etc" ? formData.etc : formData.with}
+          </span>
+          <br />
+          <span>Done: {formData.done}</span>
+          <br />
+          <p>Memo: {formData.memo}</p>
+        </Content>
       ) : (
         <StartDiv>
           <div></div>
