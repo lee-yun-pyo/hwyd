@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { motion, Variants, AnimatePresence } from "framer-motion";
-import { Switch, Route, Link, useHistory } from "react-router-dom";
-import SelectedDate from "./SelectedDate";
+import { Link, useHistory } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import { formState } from "../atom";
 
@@ -14,7 +13,7 @@ const Head = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 40px;
+  padding: 40px 0;
   position: relative;
 `;
 
@@ -70,7 +69,17 @@ const Week = styled(motion.div)`
   gap: 5px;
 `;
 
-const Day = styled(motion.div)<{ istoday: number }>`
+interface IDay {
+  istoday: number;
+  isnextdays: string | undefined;
+}
+
+const DayLink = styled(Link)<{ isnextdays: string | undefined }>`
+  pointer-events: ${(props) => (props.isnextdays ? "none" : "unset")};
+  cursor: ${(props) => (props.isnextdays ? "default" : "pointer")};
+`;
+
+const Day = styled(motion.div)<IDay>`
   background-color: ${(props) => (props.istoday ? "tomato" : "aliceblue")};
   border-radius: 7px;
   display: flex;
@@ -78,7 +87,8 @@ const Day = styled(motion.div)<{ istoday: number }>`
   justify-content: center;
   font-weight: 600;
   height: 70px;
-  cursor: pointer;
+  pointer-events: none;
+  opacity: ${(props) => (props.isnextdays ? "0.5" : "1")};
 `;
 
 const nameVariant: Variants = {
@@ -220,11 +230,12 @@ function Table() {
               item <= 0 ? (
                 <Day
                   istoday={false ? 1 : 0}
+                  isnextdays={undefined}
                   key={item}
                   style={{ visibility: "hidden" }}
                 ></Day>
               ) : (
-                <Link
+                <DayLink
                   key={item}
                   to={`/${
                     year +
@@ -232,6 +243,16 @@ function Table() {
                     (month < 10 ? "0" + month : month) +
                     (item < 10 ? "0" + item : item)
                   }`}
+                  isnextdays={
+                    +String(
+                      year +
+                        "" +
+                        (month < 10 ? "0" + month : month) +
+                        (item < 10 ? "0" + item : item)
+                    ) > +today1
+                      ? "1"
+                      : undefined
+                  }
                 >
                   <Day
                     onClick={toggleShowForm}
@@ -251,20 +272,25 @@ function Table() {
                         ? 1
                         : 0
                     }
+                    isnextdays={
+                      +String(
+                        year +
+                          "" +
+                          (month < 10 ? "0" + month : month) +
+                          (item < 10 ? "0" + item : item)
+                      ) > +today1
+                        ? "1"
+                        : undefined
+                    }
                   >
                     {item}
                   </Day>
-                </Link>
+                </DayLink>
               )
             )}
           </AnimatePresence>
         </Week>
       </Month>
-      <Switch>
-        <Route path="/:dateId">
-          <SelectedDate />
-        </Route>
-      </Switch>
     </Calendar>
   );
 }
