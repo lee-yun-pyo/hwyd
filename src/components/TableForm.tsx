@@ -5,7 +5,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { formState, userIdState } from "../atom";
 import { useHistory } from "react-router-dom";
-import { doc, getFirestore, setDoc } from "firebase/firestore";
+import {
+  arrayUnion,
+  doc,
+  getDoc,
+  getFirestore,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { fbApp } from "../fbase";
 
 const Form = styled.form`
@@ -165,6 +172,8 @@ function TableForm({ dateId }: ITableForm) {
   const db = getFirestore(fbApp);
   const onSubmit: SubmitHandler<IForm> = async (data) => {
     if (userId) {
+      const datesRef = doc(db, userId, String(dateId).slice(0, 6));
+      const docSnap = await getDoc(datesRef);
       await setDoc(doc(db, String(dateId), userId), {
         score: +data.score,
         with: data.with,
@@ -172,9 +181,20 @@ function TableForm({ dateId }: ITableForm) {
         memo: data.memo || "",
         etc: data.etcText || "",
       });
+      if (!docSnap.exists()) {
+        await setDoc(datesRef, {
+          dates: [{ date: +String(dateId).slice(6), score: +data.score }],
+        });
+      } else {
+        await updateDoc(datesRef, {
+          dates: arrayUnion({
+            date: +String(dateId).slice(6),
+            score: +data.score,
+          }),
+        });
+      }
       setForm(false);
     }
-    // console.log("Document written with ID: ", docRef.id);
     // string 값들 trim()화 필요
     // etc선택후 다른 걸 선택했을 때 etcText 값이 나타나지 않도록
     // radio 선택하지 않고 submit 했을 때 에러처리
