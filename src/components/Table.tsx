@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { motion, Variants, AnimatePresence } from "framer-motion";
 import { Link, useHistory } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
-import { formState } from "../atom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { formState, userIdState } from "../atom";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
+import { fbApp } from "../fbase";
 
 const Calendar = styled.div`
   width: 500px;
@@ -72,6 +74,7 @@ const Week = styled(motion.div)`
 interface IDay {
   istoday: number;
   isnextdays: string | undefined;
+  scoreday: number;
 }
 
 const DayLink = styled(Link)<{ isnextdays: string | undefined }>`
@@ -81,7 +84,11 @@ const DayLink = styled(Link)<{ isnextdays: string | undefined }>`
 
 const Day = styled(motion.div)<IDay>`
   background-color: ${(props) => (props.istoday ? "tomato" : "aliceblue")};
-  border-radius: 7px;
+  background-color: ${(props) =>
+    props.scoreday === 0
+      ? "aliceblue"
+      : `rgba(52, 152, 219, ${props.scoreday * 0.1})`};
+  border-radius: ${(props) => (props.istoday ? "50%" : "7px")};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -126,12 +133,21 @@ const weekVariant: Variants = {
   },
 };
 
+interface IScoreObj {
+  date: number;
+  score: number;
+}
+
 function Table() {
   let history = useHistory();
   const [year, setYear] = useState<number>(2023);
   const [[month, engMonth], setMonth] = useState<[number, string]>([1, "Jan"]);
   const [date, setDate] = useState<number[]>([]);
   const [direction, setDirection] = useState<number>(0);
+  const [scoreObj, setScoreObj] = useState<IScoreObj[]>([]);
+  const [scoreDays, setScoreDays] = useState<number[]>([]);
+  const userId = useRecoilValue(userIdState);
+  const db = getFirestore(fbApp);
   const setForm = useSetRecoilState(formState);
   const today = new Date();
   const today1 =
@@ -160,6 +176,25 @@ function Table() {
     }
     setDate(dates);
   }, [month, year]);
+  useEffect(() => {
+    setScoreDays([]);
+    setScoreObj([]);
+    async function getScores(month: string) {
+      if (userId && month) {
+        const docRef = doc(db, userId, String(year) + month);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          let days: number[] = [];
+          const data = docSnap.data().dates;
+          data.forEach((item: any) => days.push(item.date));
+          setScoreObj(data);
+          setScoreDays(days);
+        }
+      }
+    }
+    if (month < 10) getScores("0" + String(month));
+    else getScores(String(month));
+  }, [userId, year, month]);
   const goPreviousMonth = (newDirection: number) => {
     const thisMonth = new Date(`${year}-${month - 1}`);
     setMonth((prev) =>
@@ -231,6 +266,7 @@ function Table() {
                 <Day
                   istoday={false ? 1 : 0}
                   isnextdays={undefined}
+                  scoreday={0}
                   key={item}
                   style={{ visibility: "hidden" }}
                 ></Day>
@@ -281,6 +317,11 @@ function Table() {
                       ) > +today1
                         ? "1"
                         : undefined
+                    }
+                    scoreday={
+                      scoreDays.indexOf(item) < 0
+                        ? 0
+                        : scoreObj[scoreDays.indexOf(item)].score
                     }
                   >
                     {item}
