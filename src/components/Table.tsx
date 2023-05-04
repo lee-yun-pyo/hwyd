@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { motion, Variants, AnimatePresence } from "framer-motion";
 import { Link, useHistory } from "react-router-dom";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { formState, userIdState } from "../atom";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { formState, modalState, userIdState } from "../atom";
 import { doc, getDoc, getFirestore } from "firebase/firestore";
 import { fbApp } from "../fbase";
+import Modal from "./Modal";
 
 const Calendar = styled.div`
   width: 500px;
@@ -146,6 +147,7 @@ function Table() {
   const [direction, setDirection] = useState<number>(0);
   const [scoreObj, setScoreObj] = useState<IScoreObj[]>([]);
   const [scoreDays, setScoreDays] = useState<number[]>([]);
+  const [selectedId, setSelectedId] = useRecoilState(modalState);
   const userId = useRecoilValue(userIdState);
   const db = getFirestore(fbApp);
   const setForm = useSetRecoilState(formState);
@@ -219,8 +221,8 @@ function Table() {
     setForm(false);
     history.push("/");
   };
-  const toggleShowForm = () => {
-    setForm(false);
+  const showModal = (id: string) => {
+    setSelectedId(id);
   };
   return (
     <Calendar>
@@ -263,35 +265,22 @@ function Table() {
           <AnimatePresence initial={false} custom={direction}>
             {date.map((item) =>
               item <= 0 ? (
-                <Day
-                  istoday={false ? 1 : 0}
-                  isnextdays={undefined}
-                  scoreday={0}
-                  key={item}
-                  style={{ visibility: "hidden" }}
-                ></Day>
+                <div key={item}></div>
               ) : (
-                <DayLink
-                  key={item}
-                  to={`/${
-                    year +
-                    "" +
-                    (month < 10 ? "0" + month : month) +
-                    (item < 10 ? "0" + item : item)
-                  }`}
-                  isnextdays={
-                    +String(
-                      year +
-                        "" +
-                        (month < 10 ? "0" + month : month) +
-                        (item < 10 ? "0" + item : item)
-                    ) > +today1
-                      ? "1"
-                      : undefined
+                <div
+                  onClick={() =>
+                    showModal(
+                      String(
+                        year +
+                          "" +
+                          (month < 10 ? "0" + month : month) +
+                          (item < 10 ? "0" + item : item)
+                      )
+                    )
                   }
+                  key={item}
                 >
                   <Day
-                    onClick={toggleShowForm}
                     id={
                       year +
                       "" +
@@ -326,12 +315,13 @@ function Table() {
                   >
                     {item}
                   </Day>
-                </DayLink>
+                </div>
               )
             )}
           </AnimatePresence>
         </Week>
       </Month>
+      {selectedId && <Modal />}
     </Calendar>
   );
 }

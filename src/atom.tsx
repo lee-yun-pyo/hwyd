@@ -9,3 +9,8 @@ export const userIdState = atom<string | null>({
   key: "userIdState",
   default: null,
 });
+
+export const modalState = atom<string | null>({
+  key: "modalState",
+  default: null,
+});
