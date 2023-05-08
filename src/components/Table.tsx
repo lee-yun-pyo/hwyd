@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { motion, Variants, AnimatePresence } from "framer-motion";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { formState, modalState, userIdState } from "../atom";
 import { doc, getDoc, getFirestore } from "firebase/firestore";
 import { fbApp } from "../fbase";
-import Modal from "./Modal";
 
 const Calendar = styled.div`
   width: 500px;
@@ -78,11 +77,6 @@ interface IDay {
   scoreday: number;
 }
 
-const DayLink = styled(Link)<{ isnextdays: string | undefined }>`
-  pointer-events: ${(props) => (props.isnextdays ? "none" : "unset")};
-  cursor: ${(props) => (props.isnextdays ? "default" : "pointer")};
-`;
-
 const Day = styled(motion.div)<IDay>`
   background-color: ${(props) => (props.istoday ? "tomato" : "aliceblue")};
   background-color: ${(props) =>
@@ -97,6 +91,32 @@ const Day = styled(motion.div)<IDay>`
   height: 70px;
   pointer-events: none;
   opacity: ${(props) => (props.isnextdays ? "0.5" : "1")};
+`;
+
+const Container = styled(motion.div)`
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Overlay = styled.div`
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+`;
+
+const Content = styled(motion.div)`
+  position: fixed;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  width: 550px;
 `;
 
 const nameVariant: Variants = {
@@ -224,6 +244,9 @@ function Table() {
   const showModal = (id: string) => {
     setSelectedId(id);
   };
+  const hideModal = () => {
+    setSelectedId(null);
+  };
   return (
     <Calendar>
       <Head>
@@ -267,7 +290,7 @@ function Table() {
               item <= 0 ? (
                 <div key={item}></div>
               ) : (
-                <div
+                <motion.div
                   onClick={() =>
                     showModal(
                       String(
@@ -279,6 +302,12 @@ function Table() {
                     )
                   }
                   key={item}
+                  layoutId={String(
+                    year +
+                      "" +
+                      (month < 10 ? "0" + month : month) +
+                      (item < 10 ? "0" + item : item)
+                  )}
                 >
                   <Day
                     id={
@@ -315,13 +344,25 @@ function Table() {
                   >
                     {item}
                   </Day>
-                </div>
+                </motion.div>
               )
             )}
           </AnimatePresence>
         </Week>
       </Month>
-      {selectedId && <Modal />}
+      <AnimatePresence>
+        {selectedId && (
+          <Container
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <Overlay onClick={hideModal}></Overlay>
+            <Content layoutId={selectedId}>
+            </Content>
+          </Container>
+        )}
+      </AnimatePresence>
     </Calendar>
   );
 }
