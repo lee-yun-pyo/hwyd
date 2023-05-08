@@ -6,6 +6,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { formState, modalState, userIdState } from "../atom";
 import { doc, getDoc, getFirestore } from "firebase/firestore";
 import { fbApp } from "../fbase";
+import SelectedDate from "./SelectedDate";
 
 const Calendar = styled.div`
   width: 500px;
@@ -359,6 +360,7 @@ function Table() {
           >
             <Overlay onClick={hideModal}></Overlay>
             <Content layoutId={selectedId}>
+              <SelectedDate selectedId={selectedId} />
             </Content>
           </Container>
         )}

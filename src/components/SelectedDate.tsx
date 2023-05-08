@@ -1,4 +1,3 @@
-import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import TableForm from "./TableForm";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -7,9 +6,7 @@ import { doc, getDoc, getFirestore } from "firebase/firestore";
 import { fbApp } from "../fbase";
 import { useEffect, useState } from "react";
 
-const Content = styled.div`
-  color: rgba(255, 255, 255, 0.8);
-`;
+const Content = styled.div``;
 
 const Head = styled.div``;
 
@@ -24,7 +21,6 @@ const StartDiv = styled.div`
   }
   span {
     font-size: 25px;
-    color: rgba(255, 255, 255, 0.8);
     font-weight: 600;
     margin: 25px 0;
   }
@@ -45,11 +41,13 @@ interface IFormData {
   memo?: string;
 }
 
-function SelectedDate() {
+interface ISelectedDate {
+  selectedId: string;
+}
+
+function SelectedDate({ selectedId }: ISelectedDate) {
   const [form, setForm] = useRecoilState(formState);
   const userId = useRecoilValue(userIdState);
-  let match = useRouteMatch<{ dateId: string }>("/:dateId");
-  const dateId = match?.params.dateId;
   const [formData, setFormData] = useState<IFormData | null>(null);
   const db = getFirestore(fbApp);
   useEffect(() => {
@@ -65,18 +63,18 @@ function SelectedDate() {
         }
       }
     }
-    if (dateId) getData(dateId);
-  }, [dateId]);
+    if (selectedId) getData(selectedId);
+  }, [selectedId]);
   const toggleShowForm = () => {
     setForm((prev) => !prev);
   };
   return (
     <>
       {form ? (
-        <TableForm dateId={dateId} />
+        <TableForm dateId={selectedId} />
       ) : formData ? (
         <Content>
-          <Head>{dateId}</Head>
+          <Head>{selectedId}</Head>
           <span>Score: {formData.score}</span>
           <br />
           <span>
