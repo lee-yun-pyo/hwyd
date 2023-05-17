@@ -42,7 +42,7 @@ const Form = styled.form`
   width: 100%;
 `;
 
-const EmailInput = styled.div`
+export const InputWrapper = styled.div`
   position: relative;
 `;
 
@@ -55,7 +55,7 @@ const EmailInfoText = styled.span`
   margin-top: 3px;
 `;
 
-const InputSubText = styled.span`
+export const InputSubText = styled.span`
   font-size: 20px;
   display: block;
   position: absolute;
@@ -181,7 +181,7 @@ function SignUp() {
         </IntroText>
         <Form onSubmit={handleSubmit(onSignUp)}>
           <div>
-            <EmailInput>
+            <InputWrapper>
               <Input
                 {...register("newEmail", {
                   required: true,
@@ -199,10 +199,10 @@ function SignUp() {
                 <ErrorMessage>{errors.newEmail?.message}</ErrorMessage>
               )}
               <EmailInfoText>새 ID로 사용될 주소입니다.</EmailInfoText>
-            </EmailInput>
+            </InputWrapper>
           </div>
           <PwInputs>
-            <EmailInput>
+            <InputWrapper>
               <Input
                 {...register("newPassword", { required: true })}
                 type="password"
@@ -216,8 +216,8 @@ function SignUp() {
               {errors.newPassword?.message && (
                 <ErrorMessage>{errors.newPassword?.message}</ErrorMessage>
               )}
-            </EmailInput>
-            <EmailInput>
+            </InputWrapper>
+            <InputWrapper>
               <Input
                 {...register("newPassword2", { required: true })}
                 type="password"
@@ -231,7 +231,7 @@ function SignUp() {
               {errors.newPassword2?.message && (
                 <ErrorMessage>{errors.newPassword2?.message}</ErrorMessage>
               )}
-            </EmailInput>
+            </InputWrapper>
           </PwInputs>
           <Input type="submit" isCheck={undefined} value="SIGN UP" />
         </Form>
