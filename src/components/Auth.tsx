@@ -9,6 +9,7 @@ import styled from "styled-components";
 import { InputSubText, InputWrapper } from "./SignUp";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 const Container = styled.div`
   display: flex;
@@ -30,6 +31,7 @@ const FormDiv = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 30px 0;
 `;
 
 const Form = styled.form`
@@ -38,11 +40,11 @@ const Form = styled.form`
 `;
 
 interface IInput {
-  displayPwInput: boolean;
-  isPwInput: boolean;
+  showpwinput: boolean;
+  pwinput: boolean;
 }
 
-const Input = styled.input<IInput>`
+const Input = styled(motion.input)<IInput>`
   outline: none;
   padding: 20px;
   width: 100%;
@@ -51,9 +53,9 @@ const Input = styled.input<IInput>`
   text-align: left;
   font-size: 20px;
   border-radius: ${(props) =>
-    props.isPwInput
+    props.pwinput
       ? "0 0 10px 10px"
-      : props.displayPwInput
+      : props.showpwinput
       ? "10px 10px 0 0"
       : "10px"};
   &:focus {
@@ -98,21 +100,44 @@ const InputArrowBtn = styled.button`
 `;
 const GoogleBtn = styled.button`
   width: 100%;
-  padding: 10px;
-  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  padding: 15px 12px;
+  border-radius: 7px;
+  outline: none;
+  font-size: 14px;
+  background-color: #703eff;
+  border: none;
+  color: #fff;
   cursor: pointer;
+  &:hover {
+    background-color: rgba(112, 62, 255, 0.8);
+  }
+  i {
+    font-size: 18px;
+    margin-right: 7px;
+  }
 `;
 
 const DivisionDiv = styled.div`
-  width: 100%;
+  width: 80%;
   height: 1px;
   margin: 30px 0;
-  background-color: #fff;
+  background-color: rgba(255, 255, 255, 0.4);
 `;
 
 const SignUpDiv = styled.div``;
 
-const SignUpLink = styled(Link)``;
+const SignUpLink = styled(Link)`
+  font-size: 15px;
+  color: rgba(52, 152, 219);
+  span {
+    margin-right: 10px;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+`;
 
 interface IFormInput {
   email: string;
@@ -167,9 +192,9 @@ function Auth() {
           <InputWrapper>
             <Input
               {...register("email", { required: true })}
-              displayPwInput={pwInput}
-              isPwInput={false}
-              type="email"
+              showpwinput={pwInput}
+              pwinput={false}
+              type="text"
               placeholder="ID"
               required
               onKeyDown={(e) => showPwInputByEnter(e)}
@@ -190,23 +215,39 @@ function Auth() {
             <InputWrapper>
               <Input
                 {...register("password", { required: true })}
-                displayPwInput={pwInput}
-                isPwInput={true}
+                initial={{ y: -10 }}
+                animate={{ y: 0 }}
+                transition={{ type: "tween" }}
+                showpwinput={pwInput}
+                pwinput={true}
                 type="password"
                 placeholder="password"
                 required
               />
               <InputSubText className="input__label">Password</InputSubText>
+              <InputArrowBtn
+                className="iconBtn"
+                type="submit"
+                onClick={showPwInputByClick}
+              >
+                <i className="fa-solid fa-arrow-right"></i>
+              </InputArrowBtn>
             </InputWrapper>
           )}
         </Form>
-        <div>
-          <GoogleBtn onClick={googleLogin}>Sign in with Google</GoogleBtn>
-        </div>
       </FormDiv>
+      <div>
+        <GoogleBtn onClick={googleLogin}>
+          <i className="fa-brands fa-google"></i>
+          <span> Sign in with Google</span>
+        </GoogleBtn>
+      </div>
       <DivisionDiv />
       <SignUpDiv>
-        <SignUpLink to="/signup">Sign Up</SignUpLink>
+        <SignUpLink to="/signup">
+          <span>계정이 없으신가요?</span>
+          <i className="fa-solid fa-arrow-right"></i>
+        </SignUpLink>
       </SignUpDiv>
     </Container>
   );
