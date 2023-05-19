@@ -9,13 +9,14 @@ import { fbApp } from "../fbase";
 import SelectedDate from "./SelectedDate";
 
 const Calendar = styled.div`
-  width: 500px;
+  width: 100%;
+  padding: 0 100px;
 `;
 
 const Head = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   padding: 40px 0;
   position: relative;
 `;
@@ -23,8 +24,7 @@ const Head = styled.div`
 const Name = styled(motion.h4)`
   font-size: 45px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.8);
-  position: absolute;
+  margin: 0 30px;
 `;
 
 const Btns = styled.div`
@@ -33,16 +33,12 @@ const Btns = styled.div`
 `;
 
 const Btn = styled.button`
-  background-color: rgba(255, 255, 255, 0.8);
   border: none;
   color: rgba(0, 0, 0, 0.7);
   padding: 5px;
   font-size: 20px;
   font-weight: 600;
   cursor: pointer;
-  &:last-child {
-    margin-left: 10px;
-  }
 `;
 
 const Month = styled.div`
@@ -63,7 +59,13 @@ const DayOfNames = styled.div`
 const DayOfName = styled.span`
   font-weight: 600;
   font-size: 20px;
-  color: rgba(255, 255, 255, 0.8);
+`;
+
+const Division = styled.div`
+  width: 100%;
+  height: 1px;
+  margin: 10px 0 20px;
+  background-color: rgba(0, 0, 0, 0.1);
 `;
 
 const Week = styled(motion.div)`
@@ -79,7 +81,7 @@ interface IDay {
 }
 
 const Day = styled(motion.div)<IDay>`
-  background-color: ${(props) => (props.istoday ? "tomato" : "aliceblue")};
+  background-color: ${(props) => (props.istoday ? "tomato" : "")};
   background-color: ${(props) =>
     props.scoreday === 0
       ? "aliceblue"
@@ -89,7 +91,8 @@ const Day = styled(motion.div)<IDay>`
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  height: 70px;
+  font-size: 22px;
+  height: 80px;
   pointer-events: none;
   opacity: ${(props) => (props.isnextdays ? "0.5" : "1")};
 `;
@@ -247,26 +250,23 @@ function Table() {
   };
   const hideModal = () => {
     setSelectedId(null);
+    setForm(false);
   };
   return (
     <Calendar>
       <Head>
-        <AnimatePresence initial={false} custom={direction}>
-          <Name
-            key={year + "1" + month}
-            custom={direction}
-            variants={nameVariant}
-            initial="start"
-            animate="move"
-            exit="end"
-          >
-            {month} {engMonth} {year}
-          </Name>
-        </AnimatePresence>
-        <Btns>
-          <Btn onClick={() => goPreviousMonth(-1)}>{"◀"}</Btn>
-          <Btn onClick={() => goNextMonth(1)}>{"▶"}</Btn>
-        </Btns>
+        <Btn onClick={() => goPreviousMonth(-1)}>{"◀"}</Btn>
+        <Name
+          key={year + "1" + month}
+          custom={direction}
+          variants={nameVariant}
+          initial="start"
+          animate="move"
+          exit="end"
+        >
+          {engMonth} {year}
+        </Name>
+        <Btn onClick={() => goNextMonth(1)}>{"▶"}</Btn>
       </Head>
       <Month>
         <DayOfNames>
@@ -274,6 +274,7 @@ function Table() {
             <DayOfName key={item}>{item}</DayOfName>
           ))}
         </DayOfNames>
+        <Division />
         <Week
           key={year + "2" + month}
           custom={direction}
@@ -286,72 +287,64 @@ function Table() {
             opacity: { duration: 0.2 },
           }}
         >
-          <AnimatePresence initial={false} custom={direction}>
-            {date.map((item) =>
-              item <= 0 ? (
-                <div key={item}></div>
-              ) : (
-                <motion.div
-                  onClick={() =>
-                    showModal(
-                      String(
-                        year +
-                          "" +
-                          (month < 10 ? "0" + month : month) +
-                          (item < 10 ? "0" + item : item)
-                      )
-                    )
-                  }
-                  key={item}
-                  layoutId={String(
-                    year +
-                      "" +
-                      (month < 10 ? "0" + month : month) +
-                      (item < 10 ? "0" + item : item)
-                  )}
-                >
-                  <Day
-                    id={
+          {date.map((item) =>
+            item <= 0 ? (
+              <div key={item}></div>
+            ) : (
+              <motion.div
+                onClick={() =>
+                  showModal(
+                    String(
                       year +
-                      "" +
-                      (month < 10 ? "0" + month : month) +
-                      (item < 10 ? "0" + item : item)
-                    }
-                    istoday={
-                      String(
-                        year +
-                          "" +
-                          (month < 10 ? "0" + month : month) +
-                          (item < 10 ? "0" + item : item)
-                      ) === today1
-                        ? 1
-                        : 0
-                    }
-                    isnextdays={
-                      +String(
-                        year +
-                          "" +
-                          (month < 10 ? "0" + month : month) +
-                          (item < 10 ? "0" + item : item)
-                      ) > +today1
-                        ? "1"
-                        : undefined
-                    }
-                    scoreday={
-                      scoreDays.indexOf(item) < 0
-                        ? 0
-                        : scoreObj[scoreDays.indexOf(item)].score
-                    }
-                  >
-                    {item}
-                  </Day>
-                </motion.div>
-              )
-            )}
-          </AnimatePresence>
+                        "" +
+                        (month < 10 ? "0" + month : month) +
+                        (item < 10 ? "0" + item : item)
+                    )
+                  )
+                }
+                key={item}
+              >
+                <Day
+                  id={
+                    year +
+                    "" +
+                    (month < 10 ? "0" + month : month) +
+                    (item < 10 ? "0" + item : item)
+                  }
+                  istoday={
+                    String(
+                      year +
+                        "" +
+                        (month < 10 ? "0" + month : month) +
+                        (item < 10 ? "0" + item : item)
+                    ) === today1
+                      ? 1
+                      : 0
+                  }
+                  isnextdays={
+                    +String(
+                      year +
+                        "" +
+                        (month < 10 ? "0" + month : month) +
+                        (item < 10 ? "0" + item : item)
+                    ) > +today1
+                      ? "1"
+                      : undefined
+                  }
+                  scoreday={
+                    scoreDays.indexOf(item) < 0
+                      ? 0
+                      : scoreObj[scoreDays.indexOf(item)].score
+                  }
+                >
+                  {item}
+                </Day>
+              </motion.div>
+            )
+          )}
         </Week>
       </Month>
-      <AnimatePresence>
+      {/* <AnimatePresence>
         {selectedId && (
           <Container
             initial={{ opacity: 0 }}
@@ -364,7 +357,7 @@ function Table() {
             </Content>
           </Container>
         )}
-      </AnimatePresence>
+      </AnimatePresence> */}
     </Calendar>
   );
 }
