@@ -10,6 +10,7 @@ const Wrapper = styled.div`
 `;
 
 const Main = styled.div`
+  margin-top: 60px;
   display: grid;
   grid-template-columns: 1.2fr 2fr;
 `;
