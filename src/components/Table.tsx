@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { motion, Variants, AnimatePresence } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { useHistory } from "react-router-dom";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import { formState, modalState, userIdState } from "../atom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { formState, selectedState, userIdState } from "../atom";
 import { doc, getDoc, getFirestore } from "firebase/firestore";
 import { fbApp } from "../fbase";
-import SelectedDate from "./SelectedDate";
 
 const Calendar = styled.div`
   width: 100%;
@@ -25,11 +24,6 @@ const Name = styled(motion.h4)`
   font-size: 45px;
   font-weight: 600;
   margin: 0 30px;
-`;
-
-const Btns = styled.div`
-  position: absolute;
-  right: 0;
 `;
 
 const Btn = styled.button`
@@ -97,32 +91,6 @@ const Day = styled(motion.div)<IDay>`
   opacity: ${(props) => (props.isnextdays ? "0.5" : "1")};
 `;
 
-const Container = styled(motion.div)`
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const Overlay = styled.div`
-  background-color: rgba(0, 0, 0, 0.5);
-  width: 100%;
-  height: 100%;
-`;
-
-const Content = styled(motion.div)`
-  position: fixed;
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-  width: 550px;
-`;
-
 const nameVariant: Variants = {
   start: (direction: number) => {
     return {
@@ -171,7 +139,7 @@ function Table() {
   const [direction, setDirection] = useState<number>(0);
   const [scoreObj, setScoreObj] = useState<IScoreObj[]>([]);
   const [scoreDays, setScoreDays] = useState<number[]>([]);
-  const [selectedId, setSelectedId] = useRecoilState(modalState);
+  const setSelectedId = useSetRecoilState(selectedState);
   const userId = useRecoilValue(userIdState);
   const db = getFirestore(fbApp);
   const setForm = useSetRecoilState(formState);
@@ -247,10 +215,6 @@ function Table() {
   };
   const showModal = (id: string) => {
     setSelectedId(id);
-  };
-  const hideModal = () => {
-    setSelectedId(null);
-    setForm(false);
   };
   return (
     <Calendar>
@@ -344,20 +308,6 @@ function Table() {
           )}
         </Week>
       </Month>
-      {/* <AnimatePresence>
-        {selectedId && (
-          <Container
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <Overlay onClick={hideModal}></Overlay>
-            <Content layoutId={selectedId}>
-              <SelectedDate selectedId={selectedId} />
-            </Content>
-          </Container>
-        )}
-      </AnimatePresence> */}
     </Calendar>
   );
 }
