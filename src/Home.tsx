@@ -13,13 +13,18 @@ const Wrapper = styled.div`
 `;
 
 const Main = styled.div`
-  margin-top: 60px;
+  padding: 45px 20px 0 20px;
   display: grid;
   grid-template-columns: 1.2fr 2fr;
 `;
 
 const Info = styled.div`
   background-color: aliceblue;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  padding: 20px;
   width: 100%;
   height: 100%;
 `;

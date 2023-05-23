@@ -74,13 +74,21 @@ interface IDay {
   scoreday: number;
 }
 
-const Day = styled(motion.div)<IDay>`
-  background-color: ${(props) => (props.istoday ? "tomato" : "")};
+const WrapperDay = styled(motion.div)<IDay>`
   background-color: ${(props) =>
     props.scoreday === 0
       ? "aliceblue"
       : `rgba(52, 152, 219, ${props.scoreday * 0.1})`};
   border-radius: ${(props) => (props.istoday ? "50%" : "7px")};
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  opacity: ${(props) => (props.isnextdays ? "0.5" : "1")};
+  &:hover {
+    box-shadow: 0 1.5px 2px rgba(0, 0, 0, 0.5);
+    transform: translateY(-5px);
+  }
+`;
+
+const Day = styled(motion.div)`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -88,7 +96,6 @@ const Day = styled(motion.div)<IDay>`
   font-size: 22px;
   height: 80px;
   pointer-events: none;
-  opacity: ${(props) => (props.isnextdays ? "0.5" : "1")};
 `;
 
 const nameVariant: Variants = {
@@ -215,6 +222,7 @@ function Table() {
   };
   const showModal = (id: string) => {
     setSelectedId(id);
+    setForm(false);
   };
   return (
     <Calendar>
@@ -255,7 +263,7 @@ function Table() {
             item <= 0 ? (
               <div key={item}></div>
             ) : (
-              <motion.div
+              <WrapperDay
                 onClick={() =>
                   showModal(
                     String(
@@ -267,6 +275,31 @@ function Table() {
                   )
                 }
                 key={item}
+                istoday={
+                  String(
+                    year +
+                      "" +
+                      (month < 10 ? "0" + month : month) +
+                      (item < 10 ? "0" + item : item)
+                  ) === today1
+                    ? 1
+                    : 0
+                }
+                isnextdays={
+                  +String(
+                    year +
+                      "" +
+                      (month < 10 ? "0" + month : month) +
+                      (item < 10 ? "0" + item : item)
+                  ) > +today1
+                    ? "1"
+                    : undefined
+                }
+                scoreday={
+                  scoreDays.indexOf(item) < 0
+                    ? 0
+                    : scoreObj[scoreDays.indexOf(item)].score
+                }
               >
                 <Day
                   id={
@@ -275,35 +308,10 @@ function Table() {
                     (month < 10 ? "0" + month : month) +
                     (item < 10 ? "0" + item : item)
                   }
-                  istoday={
-                    String(
-                      year +
-                        "" +
-                        (month < 10 ? "0" + month : month) +
-                        (item < 10 ? "0" + item : item)
-                    ) === today1
-                      ? 1
-                      : 0
-                  }
-                  isnextdays={
-                    +String(
-                      year +
-                        "" +
-                        (month < 10 ? "0" + month : month) +
-                        (item < 10 ? "0" + item : item)
-                    ) > +today1
-                      ? "1"
-                      : undefined
-                  }
-                  scoreday={
-                    scoreDays.indexOf(item) < 0
-                      ? 0
-                      : scoreObj[scoreDays.indexOf(item)].score
-                  }
                 >
                   {item}
                 </Day>
-              </motion.div>
+              </WrapperDay>
             )
           )}
         </Week>
