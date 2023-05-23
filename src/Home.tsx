@@ -1,6 +1,9 @@
 import styled from "styled-components";
 import Navigation from "./components/Navigation";
 import Table from "./components/Table";
+import SelectedDate from "./components/SelectedDate";
+import { useRecoilValue } from "recoil";
+import { selectedState } from "./atom";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -22,11 +25,12 @@ const Info = styled.div`
 `;
 
 function Home() {
+  const selectedId = useRecoilValue(selectedState);
   return (
     <Wrapper>
       <Navigation />
       <Main>
-        <Info></Info>
+        <Info>{selectedId && <SelectedDate selectedId={selectedId} />}</Info>
         <Table />
       </Main>
     </Wrapper>
