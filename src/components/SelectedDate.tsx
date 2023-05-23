@@ -6,7 +6,10 @@ import { doc, getDoc, getFirestore } from "firebase/firestore";
 import { fbApp } from "../fbase";
 import { useEffect, useState } from "react";
 
-const Content = styled.div``;
+const Content = styled.div`
+  width: 100%;
+  height: 100%;
+`;
 
 const Head = styled.div``;
 
@@ -15,9 +18,11 @@ const StartDiv = styled.div`
   flex-direction: column;
   align-items: center;
   div {
-    background-color: rgba(255, 255, 255, 0.8);
+    font-size: 18px;
+    font-weight: 500;
+    text-align: left;
     width: 100%;
-    height: 1px;
+    letter-spacing: -0.3px;
   }
   span {
     font-size: 25px;
@@ -25,11 +30,18 @@ const StartDiv = styled.div`
     margin: 25px 0;
   }
   button {
+    background-color: rgba(112, 62, 255, 0.9);
+    color: rgba(255, 255, 255, 0.9);
     border: none;
-    padding: 12px 14px;
-    font-size: 20px;
+    padding: 11px 12px;
+    font-size: 17px;
+    font-weight: 600;
     border-radius: 8px;
     cursor: pointer;
+    &:hover {
+      background-color: rgb(112, 62, 255);
+      color: rgb(255, 255, 255);
+    }
   }
 `;
 
@@ -50,6 +62,7 @@ function SelectedDate({ selectedId }: ISelectedDate) {
   const userId = useRecoilValue(userIdState);
   const [formData, setFormData] = useState<IFormData | null>(null);
   const db = getFirestore(fbApp);
+  const dateText = `${selectedId.slice(4, 6)}월 ${selectedId.slice(6, 8)}일`;
   useEffect(() => {
     async function getData(id: string) {
       if (id && userId) {
@@ -87,7 +100,7 @@ function SelectedDate({ selectedId }: ISelectedDate) {
         </Content>
       ) : (
         <StartDiv>
-          <div></div>
+          <div>{dateText}</div>
           <span>오늘 하루를 기록하세요</span>
           <button onClick={toggleShowForm}>기록하기</button>
         </StartDiv>
