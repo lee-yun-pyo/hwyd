@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { motion, AnimatePresence } from "framer-motion";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { formState, userIdState } from "../atom";
 import { useHistory } from "react-router-dom";
@@ -16,8 +15,6 @@ import {
 import { fbApp } from "../fbase";
 
 const Form = styled.form`
-  background-color: rgba(255, 255, 255, 0.8);
-  padding: 20px 25px;
   border-radius: 15px;
   display: flex;
   flex-direction: column;
@@ -28,12 +25,13 @@ const Form = styled.form`
 const Title = styled.h6`
   font-size: 25px;
   font-weight: 600;
+  margin-bottom: 30px;
 `;
 
 const ScoreDiv = styled.div`
   display: flex;
   width: 100%;
-  margin: 15px 0;
+  margin-bottom: 30px;
   align-items: center;
   justify-content: space-between;
 `;
@@ -41,27 +39,32 @@ const ScoreDiv = styled.div`
 const InnerDiv = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 15px 0;
+  margin-bottom: 30px;
   width: 100%;
 `;
 
 const Text = styled.label`
   font-size: 20px;
   font-weight: 600;
-  margin-bottom: 12px;
+  margin-bottom: 15px;
 `;
 
-const Button = styled(motion.button)`
-  padding: 15px;
-  text-align: start;
-  border-radius: 10px;
+const Button = styled.button`
+  background-color: rgba(112, 62, 255, 0.9);
+  color: rgba(255, 255, 255, 0.9);
   border: none;
-  font-size: 20px;
+  padding: 11px 12px;
+  font-size: 17px;
   font-weight: 600;
+  border-radius: 8px;
   cursor: pointer;
+  &:hover {
+    background-color: rgb(112, 62, 255);
+    color: rgb(255, 255, 255);
+  }
 `;
 
-const Lists = styled(motion.select)`
+const Lists = styled.select`
   background-color: rgba(255, 255, 255, 0.8);
   border-radius: 6px;
   border: none;
@@ -87,7 +90,7 @@ const Lists = styled(motion.select)`
   }
 `;
 
-const List = styled(motion.option)`
+const List = styled.option`
   padding: 15px;
   font-size: 30px;
   font-weight: 600;
@@ -132,7 +135,7 @@ const Checkbox = styled.div`
 `;
 
 const CheckLabel = styled.label`
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 600;
   margin-left: 3px;
   cursor: pointer;
@@ -143,8 +146,8 @@ const XBtn = styled.button`
   border: none;
   cursor: pointer;
   position: absolute;
-  right: 25px;
-  top: 15px;
+  right: -10px;
+  top: -5px;
 `;
 
 interface ITableForm {
@@ -217,32 +220,18 @@ function TableForm({ dateId }: ITableForm) {
             <i className="fa-solid fa-xmark fa-3x"></i>
           </XBtn>
           <ScoreDiv style={{ flexDirection: "row" }}>
-            <Text htmlFor="score">What score today?</Text>
-            <AnimatePresence>
-              <Lists
-                whileTap={{ scale: 0.97 }}
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{
-                  scale: 1,
-                  opacity: 1,
-                }}
-                exit={{ opacity: 0 }}
-                {...register("score", { required: true })}
-              >
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => (
-                  <List
-                    whileHover={{ backgroundColor: "#e7edfe" }}
-                    key={item}
-                    value={item}
-                  >
-                    {item}
-                  </List>
-                ))}
-              </Lists>
-            </AnimatePresence>
+            <Text htmlFor="score">오늘 하루를 점수로 매긴다면?</Text>
+
+            <Lists>
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => (
+                <List key={item} value={item}>
+                  {item}
+                </List>
+              ))}
+            </Lists>
           </ScoreDiv>
           <InnerDiv>
-            <Text>Who with?</Text>
+            <Text>누구랑 함께 했나요?</Text>
             <Checkboxes>
               <Checkbox>
                 <RadioInput
@@ -252,7 +241,7 @@ function TableForm({ dateId }: ITableForm) {
                   value="alone"
                   onChange={hideEtcForm}
                 />
-                <CheckLabel htmlFor="alone">Alone</CheckLabel>
+                <CheckLabel htmlFor="alone">혼자</CheckLabel>
               </Checkbox>
               <Checkbox>
                 <RadioInput
@@ -262,7 +251,7 @@ function TableForm({ dateId }: ITableForm) {
                   value="family"
                   onChange={hideEtcForm}
                 />
-                <CheckLabel htmlFor="family">Family</CheckLabel>
+                <CheckLabel htmlFor="family">가족</CheckLabel>
               </Checkbox>
               <Checkbox>
                 <RadioInput
@@ -272,7 +261,7 @@ function TableForm({ dateId }: ITableForm) {
                   value="friends"
                   onChange={hideEtcForm}
                 />
-                <CheckLabel htmlFor="friends">Friends</CheckLabel>
+                <CheckLabel htmlFor="friends">친구</CheckLabel>
               </Checkbox>
               <Checkbox>
                 <RadioInput
@@ -284,7 +273,7 @@ function TableForm({ dateId }: ITableForm) {
                     setIsEtc((prev) => !prev);
                   }}
                 />
-                <CheckLabel htmlFor="etc">etc.</CheckLabel>
+                <CheckLabel htmlFor="etc">기타</CheckLabel>
               </Checkbox>
             </Checkboxes>
             {isEtc && (
@@ -294,39 +283,34 @@ function TableForm({ dateId }: ITableForm) {
                 {...register("etcText", {
                   required: isEtc ? "누구랑 함께했나요?" : false,
                 })}
-                placeholder="Who with?"
+                placeholder="누구랑 함께 했나요?"
               />
             )}
           </InnerDiv>
           <InnerDiv>
-            <Text htmlFor="done">What do?</Text>
+            <Text htmlFor="done">오늘 무엇을 했나요?</Text>
             <Input
               id="done"
               error={errors.done?.message}
               {...register("done", {
                 required: "오늘 기억남는 일을 적어주세요",
               })}
-              placeholder="What did you do today?"
+              placeholder="오늘 기억남는 일을 적어주세요"
             />
           </InnerDiv>
           <InnerDiv>
-            <Text htmlFor="memo">Memo</Text>
+            <Text htmlFor="memo">메모</Text>
             <TextArea
               id="memo"
               rows={5}
               cols={35}
               {...register("memo", { maxLength: 100 })}
-              placeholder="Write Anything"
+              placeholder="메모"
               maxLength={100}
             />
           </InnerDiv>
         </>
-        <Button
-          type="submit"
-          style={{ textAlign: "center", marginTop: 7, width: "fit-content" }}
-        >
-          Submit
-        </Button>
+        <Button type="submit">기록하기</Button>
       </Form>
     </>
   );
