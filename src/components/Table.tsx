@@ -8,7 +8,7 @@ import { doc, getDoc, getFirestore } from "firebase/firestore";
 import { fbApp } from "../fbase";
 
 const Calendar = styled.div`
-  width: 100%;
+  width: 850px;
   padding: 0 100px;
 `;
 

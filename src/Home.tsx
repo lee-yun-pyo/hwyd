@@ -9,13 +9,17 @@ const Wrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  padding: 35px 0;
+  padding-top: 40px;
 `;
 
 const Main = styled.div`
-  padding: 45px 20px 0 20px;
-  display: grid;
-  grid-template-columns: 1.2fr 2fr;
+  display: flex;
+  justify-content: center;
+`;
+
+const InfoWrapper = styled.div`
+  display: flex;
+  justify-content: center;
 `;
 
 const Info = styled.div`
@@ -24,9 +28,14 @@ const Info = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 20px;
-  padding: 20px;
-  width: 100%;
+  padding: 35px 30px;
+  width: 520px;
   height: 100%;
+`;
+
+const TableWrapper = styled.div`
+  display: flex;
+  justify-content: center;
 `;
 
 function Home() {
@@ -35,8 +44,12 @@ function Home() {
     <Wrapper>
       <Navigation />
       <Main>
-        <Info>{selectedId && <SelectedDate selectedId={selectedId} />}</Info>
-        <Table />
+        <InfoWrapper>
+          <Info>{selectedId && <SelectedDate selectedId={selectedId} />}</Info>
+        </InfoWrapper>
+        <TableWrapper>
+          <Table />
+        </TableWrapper>
       </Main>
     </Wrapper>
   );
