@@ -11,7 +11,55 @@ const Content = styled.div`
   height: 100%;
 `;
 
-const Head = styled.div``;
+const Head = styled.div`
+  span {
+    font-size: 25px;
+    font-weight: 600;
+  }
+`;
+
+const Division = styled.div`
+  margin: 34px 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  width: 100%;
+  height: 1px;
+`;
+
+const Score = styled.div`
+  font-size: 20px;
+  margin-bottom: 20px;
+  span {
+    font-size: 24px;
+    font-weight: 600;
+  }
+`;
+
+const With = styled.div`
+  font-size: 20px;
+  margin-bottom: 20px;
+  span {
+    font-size: 24px;
+    font-weight: 600;
+    text-decoration: underline;
+  }
+`;
+
+const Done = styled.div`
+  font-size: 20px;
+  margin-bottom: 20px;
+  span {
+    font-size: 24px;
+    font-weight: 600;
+    text-decoration: underline;
+  }
+`;
+
+const Memo = styled.div`
+  font-size: 20px;
+  p {
+    margin-top: 10px;
+  }
+`;
 
 const StartDiv = styled.div`
   display: flex;
@@ -87,16 +135,25 @@ function SelectedDate({ selectedId }: ISelectedDate) {
         <TableForm dateId={selectedId} />
       ) : formData ? (
         <Content>
-          <Head>{selectedId}</Head>
-          <span>Score: {formData.score}</span>
-          <br />
-          <span>
-            With: {formData.with === "etc" ? formData.etc : formData.with}
-          </span>
-          <br />
-          <span>Done: {formData.done}</span>
-          <br />
-          <p>Memo: {formData.memo}</p>
+          <Head>
+            <span>{dateText}</span>
+          </Head>
+          <Division />
+          <Score>
+            이날의 점수: <span>{formData.score}</span>
+          </Score>
+          <With>
+            <span>
+              {formData.with === "etc" ? formData.etc : formData.with}
+            </span>{" "}
+            와 함께 있었고
+          </With>
+          <Done>
+            <span>{formData.done}</span> 을 했습니다.
+          </Done>
+          <Memo>
+            Memo: <p>{formData.memo}</p>
+          </Memo>
         </Content>
       ) : (
         <StartDiv>
