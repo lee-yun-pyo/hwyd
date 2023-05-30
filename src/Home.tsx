@@ -2,8 +2,9 @@ import styled from "styled-components";
 import Navigation from "./components/Navigation";
 import Table from "./components/Table";
 import SelectedDate from "./components/SelectedDate";
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { selectedState } from "./atom";
+import { useEffect } from "react";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -39,7 +40,21 @@ const TableWrapper = styled.div`
 `;
 
 function Home() {
-  const selectedId = useRecoilValue(selectedState);
+  const [selectedId, setSelectedId] = useRecoilState(selectedState);
+  useEffect(() => {
+    const today = new Date();
+    const todayId =
+      String(today.getFullYear()) +
+      String(
+        today.getMonth() + 1 < 10
+          ? "0" + String(today.getMonth() + 1)
+          : today.getMonth() + 1
+      ) +
+      String(
+        today.getDate() < 10 ? "0" + String(today.getDate()) : today.getDate()
+      );
+    setSelectedId(todayId);
+  }, []);
   return (
     <Wrapper>
       <Navigation />
