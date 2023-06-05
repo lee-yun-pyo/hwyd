@@ -2,7 +2,13 @@ import styled from "styled-components";
 import TableForm from "./TableForm";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { formState, userIdState } from "../atom";
-import { doc, getDoc, getFirestore } from "firebase/firestore";
+import {
+  deleteDoc,
+  doc,
+  getDoc,
+  getFirestore,
+  updateDoc,
+} from "firebase/firestore";
 import { fbApp } from "../fbase";
 import { useEffect, useState } from "react";
 
@@ -138,6 +144,21 @@ function SelectedDate({ selectedId }: ISelectedDate) {
   const toggleShowForm = () => {
     setForm((prev) => !prev);
   };
+  const deletePost = async () => {
+    if (userId) {
+      await deleteDoc(doc(db, selectedId, userId));
+      const docRef = doc(db, userId, selectedId.slice(0, 6));
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data().dates;
+        let days: number[] = [];
+        data.forEach((item: any) => days.push(item.date));
+        const index = days.indexOf(Number(selectedId.slice(6, 8)));
+        data.splice(index, 1);
+        await updateDoc(docRef, { dates: data });
+      }
+    }
+  };
   return (
     <>
       {form ? (
@@ -147,10 +168,7 @@ function SelectedDate({ selectedId }: ISelectedDate) {
           <Head>
             <span>{dateText}</span>
             <BtnDiv>
-              <button>
-                <i className="fa-solid fa-pen-to-square"></i>
-              </button>
-              <button>
+              <button onClick={deletePost}>
                 <i className="fa-solid fa-trash"></i>
               </button>
             </BtnDiv>
