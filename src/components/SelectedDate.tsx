@@ -12,10 +12,55 @@ const Content = styled.div`
 `;
 
 const Head = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   span {
     font-size: 25px;
     font-weight: 600;
   }
+`;
+
+const BtnDiv = styled.div`
+  button {
+    background-color: #fff;
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 18px;
+    border: none;
+    padding: 13px;
+    cursor: pointer;
+    border-radius: 15px;
+    margin-left: 15px;
+    transition: all 0.1s ease-in-out;
+    &:hover {
+      color: #000;
+      transform: translateY(-3px);
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+  }
+`;
+
+const ContentDiv = styled.div`
+  margin-bottom: 45px;
+  display: flex;
+  align-items: center;
+`;
+
+const SubTitle = styled.span`
+  display: block;
+  text-align: center;
+  width: 100px;
+  font-size: 20px;
+  font-weight: 600;
+  background-color: #fff;
+  padding: 7px 0;
+  border-radius: 20px;
+  margin-right: 20px;
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+`;
+
+const Text = styled.span`
+  font-size: 20px;
 `;
 
 const Division = styled.div`
@@ -23,42 +68,6 @@ const Division = styled.div`
   background-color: rgba(0, 0, 0, 0.2);
   width: 100%;
   height: 1px;
-`;
-
-const Score = styled.div`
-  font-size: 20px;
-  margin-bottom: 20px;
-  span {
-    font-size: 24px;
-    font-weight: 600;
-  }
-`;
-
-const With = styled.div`
-  font-size: 20px;
-  margin-bottom: 20px;
-  span {
-    font-size: 24px;
-    font-weight: 600;
-    text-decoration: underline;
-  }
-`;
-
-const Done = styled.div`
-  font-size: 20px;
-  margin-bottom: 20px;
-  span {
-    font-size: 24px;
-    font-weight: 600;
-    text-decoration: underline;
-  }
-`;
-
-const Memo = styled.div`
-  font-size: 20px;
-  p {
-    margin-top: 10px;
-  }
 `;
 
 const StartDiv = styled.div`
@@ -137,23 +146,34 @@ function SelectedDate({ selectedId }: ISelectedDate) {
         <Content>
           <Head>
             <span>{dateText}</span>
+            <BtnDiv>
+              <button>
+                <i className="fa-solid fa-pen-to-square"></i>
+              </button>
+              <button>
+                <i className="fa-solid fa-trash"></i>
+              </button>
+            </BtnDiv>
           </Head>
           <Division />
-          <Score>
-            이날의 점수: <span>{formData.score}</span>
-          </Score>
-          <With>
-            <span>
+          <ContentDiv>
+            <SubTitle>Score</SubTitle>
+            <Text style={{ fontWeight: "600" }}>{formData.score}</Text>
+          </ContentDiv>
+          <ContentDiv>
+            <SubTitle>With</SubTitle>
+            <Text>
               {formData.with === "etc" ? formData.etc : formData.with}
-            </span>{" "}
-            와 함께 있었고
-          </With>
-          <Done>
-            <span>{formData.done}</span> 을 했습니다.
-          </Done>
-          <Memo>
-            Memo: <p>{formData.memo}</p>
-          </Memo>
+            </Text>
+          </ContentDiv>
+          <ContentDiv>
+            <SubTitle>What</SubTitle>
+            <Text>{formData.done}</Text>
+          </ContentDiv>
+          <ContentDiv>
+            <SubTitle>Memo</SubTitle>
+            <Text>{formData.memo}</Text>
+          </ContentDiv>
         </Content>
       ) : (
         <StartDiv>
