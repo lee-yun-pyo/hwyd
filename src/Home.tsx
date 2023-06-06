@@ -15,7 +15,7 @@ const Wrapper = styled.div`
 
 const Main = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
 `;
 
 const InfoWrapper = styled.div`
@@ -24,14 +24,15 @@ const InfoWrapper = styled.div`
 `;
 
 const Info = styled.div`
-  background-color: aliceblue;
+  background-color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 20px;
+  border-radius: 40px;
   padding: 35px 30px;
   width: 520px;
   height: 100%;
+  box-shadow: 0 0px 15px rgba(0, 0, 0, 0.05);
 `;
 
 const TableWrapper = styled.div`

@@ -6,14 +6,17 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 30px;
+  padding: 24px 50px;
   position: fixed;
   top: 0;
   width: 100%;
-  background-color: #703eff;
+  background-color: #fff;
+  z-index: 99;
+  border-bottom: 1px solid #ebebeb;
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.05);
   h1 {
-    color: #fff;
-    font-size: 20px;
+    color: #000;
+    font-size: 24px;
     font-weight: 600;
   }
 `;
@@ -23,11 +26,12 @@ const UserInfo = styled.div`
 `;
 
 const Text = styled.span`
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(0, 0, 0, 0.7);
   font-weight: 600;
+  font-size: 18px;
   cursor: pointer;
   &:hover {
-    color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
   }
 `;
 

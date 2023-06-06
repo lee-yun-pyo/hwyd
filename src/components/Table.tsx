@@ -8,8 +8,11 @@ import { doc, getDoc, getFirestore } from "firebase/firestore";
 import { fbApp } from "../fbase";
 
 const Calendar = styled.div`
-  width: 850px;
+  background-color: #fff;
+  width: 820px;
   padding: 0 100px;
+  border-radius: 40px;
+  box-shadow: 0 0px 15px rgba(0, 0, 0, 0.05);
 `;
 
 const Head = styled.div`
@@ -28,11 +31,15 @@ const Name = styled(motion.h4)`
 
 const Btn = styled.button`
   border: none;
-  color: rgba(0, 0, 0, 0.7);
+  color: rgba(0, 0, 0, 0.4);
+  background-color: transparent;
   padding: 5px;
-  font-size: 20px;
+  font-size: 25px;
   font-weight: 600;
   cursor: pointer;
+  &:hover {
+    color: #000;
+  }
 `;
 
 const Month = styled.div`
@@ -65,7 +72,7 @@ const Division = styled.div`
 const Week = styled(motion.div)`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 5px;
+  gap: 6px;
 `;
 
 interface IDay {
@@ -76,15 +83,20 @@ interface IDay {
 
 const WrapperDay = styled(motion.div)<IDay>`
   background-color: ${(props) =>
-    props.scoreday === 0
-      ? "aliceblue"
-      : `rgba(52, 152, 219, ${props.scoreday * 0.1})`};
-  border-radius: ${(props) => (props.istoday ? "50%" : "7px")};
+    props.istoday
+      ? "#FF3A30"
+      : props.scoreday === 0
+      ? ""
+      : `rgba(26, 188, 156, ${props.scoreday * 0.1})`};
+  border-radius: ${(props) => (props.istoday ? "50%" : "30px")};
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  opacity: ${(props) => (props.isnextdays ? "0.5" : "1")};
+  opacity: ${(props) => (props.isnextdays ? "0.3" : "1")};
+  cursor: ${(props) => (props.isnextdays ? "not-allowed" : "pointer")};
+  font-weight: ${(props) => (props.istoday ? "600" : "500")};
+  font-size: 24px;
+  color: ${(props) =>
+    props.istoday || props.scoreday ? "rgba(255,255,255,0.8)" : "#000"};
   &:hover {
-    box-shadow: 0 1.5px 2px rgba(0, 0, 0, 0.5);
-    transform: translateY(-5px);
   }
 `;
 
@@ -92,10 +104,7 @@ const Day = styled(motion.div)`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
-  font-size: 22px;
   height: 80px;
-  pointer-events: none;
 `;
 
 const nameVariant: Variants = {
@@ -221,8 +230,6 @@ function Table() {
     history.push("/");
   };
   const showModal = (id: string) => {
-    setSelectedId(id);
-    setForm(false);
     // 오늘 날짜 이후 클릭 동작 안 되게
     if (Number(id) <= Number(today1)) {
       setSelectedId(id);
@@ -232,7 +239,9 @@ function Table() {
   return (
     <Calendar>
       <Head>
-        <Btn onClick={() => goPreviousMonth(-1)}>{"◀"}</Btn>
+        <Btn onClick={() => goPreviousMonth(-1)}>
+          <i className="fa-solid fa-chevron-left fa-lg"></i>
+        </Btn>
         <Name
           key={year + "1" + month}
           custom={direction}
@@ -243,7 +252,9 @@ function Table() {
         >
           {engMonth} {year}
         </Name>
-        <Btn onClick={() => goNextMonth(1)}>{"▶"}</Btn>
+        <Btn onClick={() => goNextMonth(1)}>
+          <i className="fa-solid fa-chevron-right fa-lg"></i>
+        </Btn>
       </Head>
       <Month>
         <DayOfNames>
