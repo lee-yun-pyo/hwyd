@@ -49,37 +49,46 @@ const Input = styled.input`
   outline: none;
   &:last-child {
     color: #f9f9f9;
-    background-color: #703eff;
+    border-radius: 30px;
+    background-color: #0077ed;
     margin: 0;
     cursor: pointer;
     text-align: center;
     font-weight: 600;
     border: none;
-    padding: 10px;
+    padding: 14px;
     font-size: 1rem;
     &:hover {
-      background-color: rgba(112, 62, 255, 0.9);
+      background-color: rgba(0, 119, 237, 0.8);
     }
   }
 `;
 
+const Division = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.2);
+  margin-bottom: 30px;
+`;
+
 const BtnDiv = styled.button`
-  background-color: aliceblue;
+  background-color: rgba(0, 119, 237, 0.3);
   padding: 15px;
-  border-radius: 10px;
+  border-radius: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
   border: none;
-  width: 100%;
+  width: 90%;
   margin-bottom: 10px;
+  cursor: pointer;
   span {
     margin-right: 10px;
     font-weight: 600;
     font-size: 19px;
   }
   &:hover {
-    background-color: #ed2424;
+    background-color: rgba(0, 119, 237, 0.8);
     color: #fff;
   }
 `;
@@ -134,6 +143,7 @@ function Profile() {
               <Input type="submit" value="수정 완료" />
             </Form>
           </div>
+          <Division />
           <BtnDiv onClick={onLogout}>
             <span>로그아웃</span>
             <i className="fa-solid fa-right-from-bracket fa-lg"></i>
