@@ -38,10 +38,11 @@ const BtnDiv = styled.div`
     border-radius: 15px;
     margin-left: 15px;
     transition: all 0.1s ease-in-out;
+    box-shadow: -1px -1px 3px rgba(0, 0, 0, 0.2);
     &:hover {
       color: #000;
       transform: translateY(-3px);
-      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+      box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
     }
   }
 `;
@@ -58,11 +59,12 @@ const SubTitle = styled.span`
   width: 100px;
   font-size: 20px;
   font-weight: 600;
-  background-color: #fff;
-  padding: 7px 0;
+  background-color: #0077ed;
+  color: #fff;
+  padding: 8px 0;
   border-radius: 20px;
   margin-right: 20px;
-  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
 `;
 
 const Text = styled.span`
@@ -81,28 +83,28 @@ const StartDiv = styled.div`
   flex-direction: column;
   align-items: center;
   div {
-    font-size: 18px;
+    font-size: 22px;
     font-weight: 500;
-    text-align: left;
+    text-align: center;
     width: 100%;
     letter-spacing: -0.3px;
   }
   span {
     font-size: 25px;
     font-weight: 600;
-    margin: 25px 0;
+    margin: 30px 0;
   }
   button {
-    background-color: rgba(112, 62, 255, 0.9);
+    background-color: #0077ed;
     color: rgba(255, 255, 255, 0.9);
     border: none;
-    padding: 11px 12px;
+    padding: 12px 14px;
     font-size: 17px;
     font-weight: 600;
-    border-radius: 8px;
+    border-radius: 30px;
     cursor: pointer;
     &:hover {
-      background-color: rgb(112, 62, 255);
+      background-color: rgba(0, 119, 237, 0.8);
       color: rgb(255, 255, 255);
     }
   }
@@ -125,7 +127,9 @@ function SelectedDate({ selectedId }: ISelectedDate) {
   const userId = useRecoilValue(userIdState);
   const [formData, setFormData] = useState<IFormData | null>(null);
   const db = getFirestore(fbApp);
-  const dateText = `${selectedId.slice(4, 6)}월 ${selectedId.slice(6, 8)}일`;
+  const month = parseInt(selectedId.slice(4, 6));
+  const day = parseInt(selectedId.slice(6, 8));
+  const dateText = `${month}월 ${day}일`;
   useEffect(() => {
     async function getData(id: string) {
       if (id && userId) {
