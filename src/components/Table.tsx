@@ -223,6 +223,11 @@ function Table() {
   const showModal = (id: string) => {
     setSelectedId(id);
     setForm(false);
+    // 오늘 날짜 이후 클릭 동작 안 되게
+    if (Number(id) <= Number(today1)) {
+      setSelectedId(id);
+      setForm(false);
+    }
   };
   return (
     <Calendar>
