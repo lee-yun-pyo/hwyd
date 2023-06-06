@@ -121,6 +121,12 @@ const Checkboxes = styled.div`
   padding: 0 5px;
 `;
 
+const ErrorMessage = styled.span`
+  color: #de071c;
+  font-size: 16px;
+  font-weight: 500;
+`;
+
 const Checkbox = styled.div`
   display: flex;
   align-items: center;
@@ -178,8 +184,8 @@ function TableForm({ dateId }: ITableForm) {
         score: +data.score,
         with: data.with,
         done: data.done.trim(),
-        memo: data.memo || "",
-        etc: data.etcText || "",
+        memo: data.memo?.trim(),
+        etc: data.etcText?.trim() || "",
       });
       if (!docSnap.exists()) {
         await setDoc(datesRef, {
@@ -195,9 +201,6 @@ function TableForm({ dateId }: ITableForm) {
       }
       setForm(false);
     }
-    // string 값들 trim()화 필요
-    // etc선택후 다른 걸 선택했을 때 etcText 값이 나타나지 않도록
-    // radio 선택하지 않고 submit 했을 때 에러처리
   };
   const hideTableForm = () => {
     setForm(false);
@@ -227,14 +230,17 @@ function TableForm({ dateId }: ITableForm) {
             </Lists>
           </ScoreDiv>
           <InnerDiv>
-            <Text>누구랑 함께 했나요?</Text>
+            <Text>
+              누구랑 함께 했나요?{" "}
+              {errors.with && <ErrorMessage>하나를 선택하세요</ErrorMessage>}
+            </Text>
             <Checkboxes>
               <Checkbox>
                 <RadioInput
                   type="radio"
                   id="alone"
                   {...register("with", { required: true })}
-                  value="alone"
+                  value="혼자"
                   onChange={hideEtcForm}
                 />
                 <CheckLabel htmlFor="alone">혼자</CheckLabel>
@@ -244,7 +250,7 @@ function TableForm({ dateId }: ITableForm) {
                   type="radio"
                   id="family"
                   {...register("with", { required: true })}
-                  value="family"
+                  value="가족"
                   onChange={hideEtcForm}
                 />
                 <CheckLabel htmlFor="family">가족</CheckLabel>
@@ -254,7 +260,7 @@ function TableForm({ dateId }: ITableForm) {
                   type="radio"
                   id="friends"
                   {...register("with", { required: true })}
-                  value="friends"
+                  value="친구"
                   onChange={hideEtcForm}
                 />
                 <CheckLabel htmlFor="friends">친구</CheckLabel>
