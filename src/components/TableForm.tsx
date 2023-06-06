@@ -50,22 +50,21 @@ const Text = styled.label`
 `;
 
 const Button = styled.button`
-  background-color: rgba(112, 62, 255, 0.9);
+  background-color: #0077ed;
   color: rgba(255, 255, 255, 0.9);
   border: none;
-  padding: 11px 12px;
+  padding: 13px 12px;
   font-size: 17px;
   font-weight: 600;
-  border-radius: 8px;
+  border-radius: 30px;
   cursor: pointer;
   &:hover {
-    background-color: rgb(112, 62, 255);
+    background-color: rgba(0, 119, 237, 0.8);
     color: rgb(255, 255, 255);
   }
 `;
 
 const Lists = styled.select`
-  background-color: rgba(255, 255, 255, 0.8);
   border-radius: 6px;
   border: none;
   padding: 10px;
@@ -73,20 +72,12 @@ const Lists = styled.select`
   font-size: 24px;
   font-weight: 600;
   outline: none;
-  &::-webkit-scrollbar-track {
-    border-radius: 100px;
-    border-top-left-radius: 0px;
-    border-bottom-left-radius: 0px;
-    background-color: azure;
-  }
-  &::-webkit-scrollbar {
-    width: 8px;
-    border-radius: 100px;
-    background-color: azure;
-  }
-  &::-webkit-scrollbar-thumb {
-    border-radius: 100px;
-    background-color: #000000;
+  transition: all 0.1s ease-in-out;
+  box-shadow: -1px -1px 3px rgba(0, 0, 0, 0.2);
+  &:hover {
+    color: #000;
+    transform: translateY(-3px);
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
   }
 `;
 
@@ -105,7 +96,8 @@ const Input = styled.input<{ error: string | undefined }>`
   padding: 10px;
   font-size: 20px;
   border-radius: 8px;
-  border: ${(props) => (props.error ? "1px solid tomato" : "none")};
+  border: ${(props) =>
+    props.error ? "2px solid tomato" : "1px solid rgba(0, 0, 0, 0.2)"};
   outline: none;
 `;
 
@@ -118,7 +110,7 @@ const TextArea = styled.textarea`
   padding: 10px;
   font-size: 20px;
   border-radius: 8px;
-  border: none;
+  border: 1px solid rgba(0, 0, 0, 0.2);
   outline: none;
   resize: none;
 `;
@@ -148,6 +140,11 @@ const XBtn = styled.button`
   position: absolute;
   right: -10px;
   top: -5px;
+  color: rgba(0, 0, 0, 0.3);
+  transition: color 0.1s ease-in-out;
+  &:hover {
+    color: rgba(0, 0, 0, 0.9);
+  }
 `;
 
 interface ITableForm {
@@ -221,8 +218,7 @@ function TableForm({ dateId }: ITableForm) {
           </XBtn>
           <ScoreDiv style={{ flexDirection: "row" }}>
             <Text htmlFor="score">오늘 하루를 점수로 매긴다면?</Text>
-
-            <Lists>
+            <Lists {...register("score", { required: true })}>
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => (
                 <List key={item} value={item}>
                   {item}
