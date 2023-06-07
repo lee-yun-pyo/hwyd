@@ -17,8 +17,6 @@ const Container = styled.div`
   align-items: center;
 `;
 
-const LogoDiv = styled.div``;
-
 const MainTextDiv = styled.div`
   margin-bottom: 20px;
   h1 {
@@ -98,20 +96,34 @@ const InputArrowBtn = styled.button`
     color: rgba(0, 0, 0, 0.4);
   }
 `;
+
+const ErrorMessage = styled.span`
+  color: #de071c;
+  margin-top: 12px;
+`;
+
+const GoogleBtnDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 15px;
+`;
+
 const GoogleBtn = styled.button`
   width: 100%;
   display: flex;
   align-items: center;
-  padding: 15px 12px;
-  border-radius: 7px;
+  padding: 16px 14px;
+  margin-top: 10px;
+  border-radius: 50px;
   outline: none;
   font-size: 14px;
-  background-color: #703eff;
+  background-color: #0077ed;
   border: none;
   color: #fff;
   cursor: pointer;
   &:hover {
-    background-color: rgba(112, 62, 255, 0.8);
+    background-color: rgba(0, 119, 237, 0.8);
   }
   i {
     font-size: 18px;
@@ -120,10 +132,10 @@ const GoogleBtn = styled.button`
 `;
 
 const DivisionDiv = styled.div`
-  width: 80%;
+  width: 100%;
   height: 1px;
   margin: 30px 0;
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: rgba(0, 0, 0, 0.2);
 `;
 
 const SignUpDiv = styled.div``;
@@ -145,8 +157,14 @@ interface IFormInput {
 }
 
 function Auth() {
-  const { register, handleSubmit, setError, setFocus, setValue } =
-    useForm<IFormInput>();
+  const {
+    register,
+    handleSubmit,
+    setError,
+    setFocus,
+    setValue,
+    formState: { errors },
+  } = useForm<IFormInput>();
   const [pwInput, setPwInput] = useState(false);
   useEffect(() => {
     setFocus("password");
@@ -161,7 +179,7 @@ function Auth() {
           "email",
           {
             type: "manual",
-            message: "이메일 또는 비밀번호가 일치하지 않습니다.",
+            message: "ID 또는 비밀번호가 일치하지 않습니다.",
           },
           { shouldFocus: true }
         );
@@ -183,7 +201,6 @@ function Auth() {
   };
   return (
     <Container>
-      <LogoDiv></LogoDiv>
       <MainTextDiv>
         <h1>HWYD ID</h1>
       </MainTextDiv>
@@ -235,13 +252,17 @@ function Auth() {
             </InputWrapper>
           )}
         </Form>
+        {errors.email?.message && (
+          <ErrorMessage>{errors.email.message}</ErrorMessage>
+        )}
       </FormDiv>
-      <div>
+      <GoogleBtnDiv>
+        <span>구글로 로그인하기</span>
         <GoogleBtn onClick={googleLogin}>
           <i className="fa-brands fa-google"></i>
           <span> Sign in with Google</span>
         </GoogleBtn>
-      </div>
+      </GoogleBtnDiv>
       <DivisionDiv />
       <SignUpDiv>
         <SignUpLink to="/signup">
