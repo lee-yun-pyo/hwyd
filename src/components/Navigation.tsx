@@ -18,6 +18,7 @@ const Container = styled.div`
     color: #000;
     font-size: 24px;
     font-weight: 600;
+    cursor: pointer;
   }
 `;
 
@@ -39,7 +40,9 @@ function Navigation() {
   const user = auth.currentUser;
   return (
     <Container>
-      <h1>How was your day?</h1>
+      <Link to="/">
+        <h1>How was your day?</h1>
+      </Link>
       <UserInfo>
         <Text>
           <Link to="/profile">{user?.displayName || "사용자"}</Link>
