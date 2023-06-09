@@ -9,7 +9,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: aliceblue;
   padding: 50px 30px 40px;
   border-radius: 10px;
 `;
@@ -69,7 +68,6 @@ export const InputSubText = styled.span`
 
 const Input = styled.input<{ isCheck: string | undefined }>`
   width: 100%;
-  background-color: rgba(112, 62, 255, 0.1);
   border: 1px solid #d6d6d6;
   padding: 25px 12px 5px 12px;
   border-radius: 6px;
@@ -91,13 +89,16 @@ const Input = styled.input<{ isCheck: string | undefined }>`
   }
   &:last-child {
     color: #f9f9f9;
-    background-color: #703eff;
+    background-color: #0077ed;
     cursor: pointer;
     text-align: center;
     font-weight: 600;
     border: none;
     padding: 10px;
     font-size: 1rem;
+    &:hover {
+      background-color: rgba(0, 119, 237, 0.8);
+    }
   }
 `;
 
