@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import TableForm from "./TableForm";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { formState, userIdState } from "../atom";
+import { formState, selectedDataState, userIdState } from "../atom";
 import {
   deleteDoc,
   doc,
@@ -10,7 +10,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { fbApp } from "../fbase";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 const Content = styled.div`
   width: 100%;
@@ -125,7 +125,7 @@ interface ISelectedDate {
 function SelectedDate({ selectedId }: ISelectedDate) {
   const [form, setForm] = useRecoilState(formState);
   const userId = useRecoilValue(userIdState);
-  const [formData, setFormData] = useState<IFormData | null>(null);
+  const [selectedData, setSelectedData] = useRecoilState(selectedDataState);
   const db = getFirestore(fbApp);
   const month = parseInt(selectedId.slice(4, 6));
   const day = parseInt(selectedId.slice(6, 8));
@@ -137,9 +137,9 @@ function SelectedDate({ selectedId }: ISelectedDate) {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const data = docSnap.data() as IFormData;
-          setFormData(data);
+          setSelectedData(data);
         } else {
-          setFormData(null);
+          setSelectedData(null);
         }
       }
     }
@@ -149,7 +149,6 @@ function SelectedDate({ selectedId }: ISelectedDate) {
     setForm((prev) => !prev);
   };
   const deletePost = async () => {
-    if (userId) {
       await deleteDoc(doc(db, selectedId, userId));
       const docRef = doc(db, userId, selectedId.slice(0, 6));
       const docSnap = await getDoc(docRef);
@@ -167,7 +166,7 @@ function SelectedDate({ selectedId }: ISelectedDate) {
     <>
       {form ? (
         <TableForm dateId={selectedId} />
-      ) : formData ? (
+      ) : selectedData ? (
         <Content>
           <Head>
             <span>{dateText}</span>
@@ -180,21 +179,23 @@ function SelectedDate({ selectedId }: ISelectedDate) {
           <Division />
           <ContentDiv>
             <SubTitle>Score</SubTitle>
-            <Text style={{ fontWeight: "600" }}>{formData.score}</Text>
+            <Text style={{ fontWeight: "600" }}>{selectedData.score}</Text>
           </ContentDiv>
           <ContentDiv>
             <SubTitle>With</SubTitle>
             <Text>
-              {formData.with === "etc" ? formData.etc : formData.with}
+              {selectedData.with === "etc"
+                ? selectedData.etc
+                : selectedData.with}
             </Text>
           </ContentDiv>
           <ContentDiv>
             <SubTitle>What</SubTitle>
-            <Text>{formData.done}</Text>
+            <Text>{selectedData.done}</Text>
           </ContentDiv>
           <ContentDiv>
             <SubTitle>Memo</SubTitle>
-            <Text>{formData.memo}</Text>
+            <Text>{selectedData.memo}</Text>
           </ContentDiv>
         </Content>
       ) : (

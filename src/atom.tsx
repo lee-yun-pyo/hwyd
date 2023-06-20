@@ -14,3 +14,16 @@ export const selectedState = atom<string | null>({
   key: "selectedState",
   default: null,
 });
+
+interface IFormData {
+  score: number;
+  with: string;
+  etc?: string;
+  done: string;
+  memo?: string;
+}
+
+export const selectedDataState = atom<IFormData | null>({
+  key: "selectedDataState",
+  default: null,
+});

@@ -2,8 +2,7 @@ import styled from "styled-components";
 import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { formState, userIdState } from "../atom";
-import { useHistory } from "react-router-dom";
+import { formState, selectedDataState, userIdState } from "../atom";
 import {
   arrayUnion,
   doc,
@@ -166,7 +165,6 @@ interface IForm {
 }
 
 function TableForm({ dateId }: ITableForm) {
-  let history = useHistory();
   const setForm = useSetRecoilState(formState);
   const userId = useRecoilValue(userIdState);
   const {
@@ -175,18 +173,20 @@ function TableForm({ dateId }: ITableForm) {
     formState: { errors },
   } = useForm<IForm>();
   const [isEtc, setIsEtc] = useState(false);
+  const setSelectedData = useSetRecoilState(selectedDataState);
   const db = getFirestore(fbApp);
   const onSubmit: SubmitHandler<IForm> = async (data) => {
     if (userId) {
-      const datesRef = doc(db, userId, String(dateId).slice(0, 6));
-      const docSnap = await getDoc(datesRef);
-      await setDoc(doc(db, String(dateId), userId), {
+      const dataObj = {
         score: +data.score,
         with: data.with,
         done: data.done.trim(),
         memo: data.memo?.trim(),
         etc: data.etcText?.trim() || "",
-      });
+      };
+      const datesRef = doc(db, userId, String(dateId).slice(0, 6));
+      const docSnap = await getDoc(datesRef);
+      await setDoc(doc(db, String(dateId), userId), dataObj);
       if (!docSnap.exists()) {
         await setDoc(datesRef, {
           dates: [{ date: +String(dateId).slice(6), score: +data.score }],
@@ -200,11 +200,11 @@ function TableForm({ dateId }: ITableForm) {
         });
       }
       setForm(false);
+      setSelectedData(dataObj);
     }
   };
   const hideTableForm = () => {
     setForm(false);
-    history.push("/");
   };
   const hideEtcForm = () => {
     setIsEtc(false);
