@@ -2,8 +2,14 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { motion, Variants } from "framer-motion";
 import { useHistory } from "react-router-dom";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { formState, selectedState, userIdState } from "../atom";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import {
+  formState,
+  scoreDaysState,
+  scoreObjState,
+  selectedState,
+  userIdState,
+} from "../atom";
 import { doc, getDoc, getFirestore } from "firebase/firestore";
 import { fbApp } from "../fbase";
 
@@ -142,19 +148,14 @@ const weekVariant: Variants = {
   },
 };
 
-interface IScoreObj {
-  date: number;
-  score: number;
-}
-
 function Table() {
   let history = useHistory();
   const [year, setYear] = useState<number>(2023);
   const [[month, engMonth], setMonth] = useState<[number, string]>([1, "Jan"]);
   const [date, setDate] = useState<number[]>([]);
   const [direction, setDirection] = useState<number>(0);
-  const [scoreObj, setScoreObj] = useState<IScoreObj[]>([]);
-  const [scoreDays, setScoreDays] = useState<number[]>([]);
+  const [scoreObj, setScoreObj] = useRecoilState(scoreObjState);
+  const [scoreDays, setScoreDays] = useRecoilState(scoreDaysState);
   const setSelectedId = useSetRecoilState(selectedState);
   const userId = useRecoilValue(userIdState);
   const db = getFirestore(fbApp);
@@ -187,8 +188,6 @@ function Table() {
     setDate(dates);
   }, [month, year]);
   useEffect(() => {
-    setScoreDays([]);
-    setScoreObj([]);
     async function getScores(month: string) {
       if (userId && month) {
         const docRef = doc(db, userId, String(year) + month);
