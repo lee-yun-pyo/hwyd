@@ -1,7 +1,13 @@
 import styled from "styled-components";
 import TableForm from "./TableForm";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { formState, selectedDataState, userIdState } from "../atom";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import {
+  formState,
+  scoreDaysState,
+  scoreObjState,
+  selectedDataState,
+  userIdState,
+} from "../atom";
 import {
   deleteDoc,
   doc,
@@ -126,6 +132,8 @@ function SelectedDate({ selectedId }: ISelectedDate) {
   const [form, setForm] = useRecoilState(formState);
   const userId = useRecoilValue(userIdState);
   const [selectedData, setSelectedData] = useRecoilState(selectedDataState);
+  const setScoreObj = useSetRecoilState(scoreObjState);
+  const setScoreDays = useSetRecoilState(scoreDaysState);
   const db = getFirestore(fbApp);
   const month = parseInt(selectedId.slice(4, 6));
   const day = parseInt(selectedId.slice(6, 8));
@@ -161,7 +169,10 @@ function SelectedDate({ selectedId }: ISelectedDate) {
         data.forEach((item: any) => days.push(item.date));
         const index = days.indexOf(Number(selectedId.slice(6, 8)));
         data.splice(index, 1);
+        days.splice(index, 1);
         await updateDoc(docRef, { dates: data });
+        setScoreObj(data);
+        setScoreDays(days);
       }
     }
   };
