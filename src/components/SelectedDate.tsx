@@ -149,7 +149,10 @@ function SelectedDate({ selectedId }: ISelectedDate) {
     setForm((prev) => !prev);
   };
   const deletePost = async () => {
+    const ok = window.confirm("정말로 삭제하시겠습니까?");
+    if (ok && userId) {
       await deleteDoc(doc(db, selectedId, userId));
+      setSelectedData(null);
       const docRef = doc(db, userId, selectedId.slice(0, 6));
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
