@@ -27,3 +27,18 @@ export const selectedDataState = atom<IFormData | null>({
   key: "selectedDataState",
   default: null,
 });
+
+interface IScoreObj {
+  date: number;
+  score: number;
+}
+
+export const scoreObjState = atom<IScoreObj[]>({
+  key: "scoreObjState",
+  default: [],
+});
+
+export const scoreDaysState = atom<number[]>({
+  key: "scoreDaysState",
+  default: [],
+});
