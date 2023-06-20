@@ -2,7 +2,13 @@ import styled from "styled-components";
 import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { formState, selectedDataState, userIdState } from "../atom";
+import {
+  formState,
+  scoreDaysState,
+  scoreObjState,
+  selectedDataState,
+  userIdState,
+} from "../atom";
 import {
   arrayUnion,
   doc,
@@ -167,6 +173,8 @@ interface IForm {
 function TableForm({ dateId }: ITableForm) {
   const setForm = useSetRecoilState(formState);
   const userId = useRecoilValue(userIdState);
+  const setScoreObj = useSetRecoilState(scoreObjState);
+  const setScoreDays = useSetRecoilState(scoreDaysState);
   const {
     register,
     handleSubmit,
@@ -199,6 +207,11 @@ function TableForm({ dateId }: ITableForm) {
           }),
         });
       }
+      setScoreObj((prev) => [
+        ...prev,
+        { date: +String(dateId).slice(6), score: +data.score },
+      ]);
+      setScoreDays((prev) => [...prev, +String(dateId).slice(6)]);
       setForm(false);
       setSelectedData(dataObj);
     }
