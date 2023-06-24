@@ -103,7 +103,7 @@ function Profile() {
   const [name, setName] = useState<string>("");
   const user = auth.currentUser;
   useEffect(() => {
-    if (user) setName(user.displayName || "사용자");
+    setName(user?.displayName || "사용자");
   }, []);
   const changeName = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.currentTarget.value);
@@ -115,6 +115,7 @@ function Profile() {
         displayName: name,
       });
     }
+    history.go(0);
   };
   const onLogout = async () => {
     await signOut(auth);
@@ -135,10 +136,11 @@ function Profile() {
               <span>이름</span>
               <Input
                 {...register("name", { required: true })}
-                onChange={changeName}
                 type="text"
+                onChange={changeName}
                 value={name}
                 placeholder="이름"
+                required
               />
               <Input type="submit" value="수정 완료" />
             </Form>
