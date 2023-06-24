@@ -60,12 +60,12 @@ function Home() {
     <Wrapper>
       <Navigation />
       <Main>
-        <InfoWrapper>
-          <Info>{selectedId && <SelectedDate selectedId={selectedId} />}</Info>
-        </InfoWrapper>
         <TableWrapper>
           <Table />
         </TableWrapper>
+        <InfoWrapper>
+          <Info>{selectedId && <SelectedDate selectedId={selectedId} />}</Info>
+        </InfoWrapper>
       </Main>
     </Wrapper>
   );
