@@ -159,6 +159,15 @@ function SignUp() {
           },
           { shouldFocus: true }
         );
+      } else if (error.message.includes("email-already-in-use")) {
+        setError(
+          "newEmail",
+          {
+            type: "manual",
+            message: "이미 존재하는 이메일 입니다.",
+          },
+          { shouldFocus: true }
+        );
       } else if (error.message.includes("weak-password")) {
         setError(
           "newPassword",
