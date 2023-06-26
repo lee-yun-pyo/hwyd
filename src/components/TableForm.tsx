@@ -234,7 +234,7 @@ function TableForm({ dateId }: ITableForm) {
           </XBtn>
           <ScoreDiv style={{ flexDirection: "row" }}>
             <Text htmlFor="score">오늘 하루를 점수로 매긴다면?</Text>
-            <Lists {...register("score", { required: true })}>
+            <Lists id="score" {...register("score", { required: true })}>
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => (
                 <List key={item} value={item}>
                   {item}
