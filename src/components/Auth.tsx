@@ -38,8 +38,8 @@ const Form = styled.form`
 `;
 
 interface IInput {
-  showpwinput: boolean;
-  pwinput: boolean;
+  $showpwinput: boolean;
+  $pwinput: boolean;
 }
 
 const Input = styled(motion.input)<IInput>`
@@ -51,9 +51,9 @@ const Input = styled(motion.input)<IInput>`
   text-align: left;
   font-size: 20px;
   border-radius: ${(props) =>
-    props.pwinput
+    props.$pwinput
       ? "0 0 10px 10px"
-      : props.showpwinput
+      : props.$showpwinput
       ? "10px 10px 0 0"
       : "10px"};
   &:focus {
@@ -209,8 +209,8 @@ function Auth() {
           <InputWrapper>
             <Input
               {...register("email", { required: true })}
-              showpwinput={pwInput}
-              pwinput={false}
+              $showpwinput={pwInput}
+              $pwinput={false}
               type="text"
               placeholder="ID"
               required
@@ -235,8 +235,8 @@ function Auth() {
                 initial={{ y: -10 }}
                 animate={{ y: 0 }}
                 transition={{ type: "tween" }}
-                showpwinput={pwInput}
-                pwinput={true}
+                $showpwinput={pwInput}
+                $pwinput={true}
                 type="password"
                 placeholder="password"
                 required
