@@ -190,6 +190,8 @@ function Table() {
     setDate(dates);
   }, [month, year]);
   useEffect(() => {
+    setScoreDays([]);
+    setScoreObj([]);
     async function getScores(month: string) {
       if (userId && month) {
         const docRef = doc(db, userId, String(year) + month);
