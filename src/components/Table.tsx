@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { motion, Variants } from "framer-motion";
-import { useHistory } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   formState,
@@ -82,26 +81,26 @@ const Week = styled(motion.div)`
 `;
 
 interface IDay {
-  istoday: number;
-  isnextdays: string | undefined;
-  scoreday: number;
+  $istoday: number;
+  $isnextdays: string | undefined;
+  $scoreday: number;
 }
 
 const WrapperDay = styled(motion.div)<IDay>`
   background-color: ${(props) =>
-    props.istoday
+    props.$istoday
       ? "#FF3A30"
-      : props.scoreday === 0
+      : props.$scoreday === 0
       ? ""
-      : `rgba(26, 188, 156, ${props.scoreday * 0.1})`};
-  border-radius: ${(props) => (props.istoday ? "50%" : "30px")};
+      : `rgba(26, 188, 156, ${props.$scoreday * 0.1})`};
+  border-radius: ${(props) => (props.$istoday ? "50%" : "30px")};
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  opacity: ${(props) => (props.isnextdays ? "0.3" : "1")};
-  cursor: ${(props) => (props.isnextdays ? "not-allowed" : "pointer")};
-  font-weight: ${(props) => (props.istoday ? "600" : "500")};
+  opacity: ${(props) => (props.$isnextdays ? "0.3" : "1")};
+  cursor: ${(props) => (props.$isnextdays ? "not-allowed" : "pointer")};
+  font-weight: ${(props) => (props.$istoday ? "600" : "500")};
   font-size: 24px;
   color: ${(props) =>
-    props.istoday || props.scoreday ? "rgba(255,255,255,0.8)" : "#000"};
+    props.$istoday || props.$scoreday ? "rgba(255,255,255,0.8)" : "#000"};
   transition: all 0.1s ease-in-out;
   &:hover {
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
@@ -151,7 +150,6 @@ const weekVariant: Variants = {
 };
 
 function Table() {
-  let history = useHistory();
   const [year, setYear] = useState<number>(2023);
   const [[month, engMonth], setMonth] = useState<[number, string]>([1, "Jan"]);
   const [date, setDate] = useState<number[]>([]);
@@ -218,7 +216,6 @@ function Table() {
     setYear((prev) => (month === 1 ? prev - 1 : prev));
     setDirection(newDirection);
     setForm(false);
-    history.push("/");
   };
   const goNextMonth = (newDirection: number) => {
     const thisMonth = new Date(`${year}-${month + 1}`);
@@ -230,7 +227,6 @@ function Table() {
     setYear((prev) => (month === 12 ? prev + 1 : prev));
     setDirection(newDirection);
     setForm(false);
-    history.push("/");
   };
   const showModal = (id: string) => {
     // 오늘 날짜 이후 클릭 동작 안 되게
@@ -294,7 +290,7 @@ function Table() {
                   )
                 }
                 key={item}
-                istoday={
+                $istoday={
                   String(
                     year +
                       "" +
@@ -304,7 +300,7 @@ function Table() {
                     ? 1
                     : 0
                 }
-                isnextdays={
+                $isnextdays={
                   +String(
                     year +
                       "" +
@@ -314,7 +310,7 @@ function Table() {
                     ? "1"
                     : undefined
                 }
-                scoreday={
+                $scoreday={
                   scoreDays.indexOf(item) < 0
                     ? 0
                     : scoreObj[scoreDays.indexOf(item)].score
