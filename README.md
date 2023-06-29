@@ -1,46 +1,40 @@
-# Getting Started with Create React App
+# hwyd
+> **개발 인원: 1명** <br>
+> **개발 기간: 23.03 ~ 23.06**
+<br />
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 📌 프로젝트 소개
+> **주소**  https://lee-yun-pyo.github.io/hwyd
 
-## Available Scripts
+**hwyd** 는 **how was your day?** 의 약자
 
-In the project directory, you can run:
+오늘 하루 자신의 기분이 0~10점에서 어느 정도인지 기록하고 누구와 함께 했는지, 무엇을 했는지 기록.
 
-### `npm start`
+사용자는 그동안 자신이 기록했던 것을 보면서 **어떤 일을 할 때 또는 누구와 함께 있을 때 기쁜지 파악하고 어떤 일을 할 때 스트레스를 받는지 파악**하여 자신의 감정을 관리. 
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+**리액트**와 **firebase**에 대해 배운 시점에 이를 활용하여 서비스를 만듦.
+<br />
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## ⚒ Stacks
+#### Enviroment
+<img src="https://img.shields.io/badge/visual studio code-007ACC?style=for-the-badge&logo=visual studio code&logoColor=white"> <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
 
-### `npm test`
+#### Development
+<img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black">  <img src="https://img.shields.io/badge/typescript-0076C6?style=for-the-badge&logo=typescript&logoColor=white">  <img src="https://img.shields.io/badge/firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=white"> 
+<br />
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🎨 화면 구성
+| 홈 화면 | 프로필 변경 화면 | 
+| :---:| :---:|
+| <img src="https://github.com/lee-yun-pyo/hwyd/assets/41375597/9144137f-e371-4b99-9e49-38f0bee14aca" /> | ![image](https://github.com/lee-yun-pyo/hwyd/assets/41375597/cfa54165-e656-407e-88ff-c077ebe9084a) |
+| <img src="https://github.com/lee-yun-pyo/hwyd/assets/41375597/6bbb83ba-e83c-4b54-b9c0-31141ba0c940" height=340 /> | <img src="https://github.com/lee-yun-pyo/hwyd/assets/41375597/e359738e-b2dd-4221-b3c6-b0bb6325ade7" height=340 /> |
+<br />
 
-### `npm run build`
+## 💻 기능
+**1. 회원 가입, 로그인 기능**
+  - firebase를 이용하여 구글 로그인 및 이메일 로그인 수행
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+**2. 달력에 각 날의 기분 점수 표기**
+- 달력에 각 날의 기분 점수를 색깔로 표시하여 한 달간 기분변화 파악 용이
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+**3. 달력에 각 날짜들을 클릭한 후 사용자가 이미 작성한 데이터가 있으면 데이터 표시**
